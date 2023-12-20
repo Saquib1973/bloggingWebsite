@@ -1,0 +1,13 @@
+frontend/node_modules/
+server/node_modules/
+bundle.js
+npm-debug.log
+
+
+
+.env
+.passport.js
+.DS_Store
+
+build/
+dist/
