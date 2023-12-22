@@ -5,7 +5,7 @@ import Header from "@editorjs/header";
 import Quote from "@editorjs/quote";
 import Marker from "@editorjs/marker";
 import InlineCode from "@editorjs/inline-code";
-
+import { uploadImage } from "./../common/aws";
 const uploadImageByUrl = (e) => {
   let link = new Promise((resolve, reject) => {
     try {
@@ -14,14 +14,29 @@ const uploadImageByUrl = (e) => {
       reject(error);
     }
   });
-  return link.then((url) => {
-    return {
-      success: 1,
-      file: { url },
-    };
-  });
+  return link
+    .then((url) => {
+      return {
+        success: 1,
+        file: { url },
+      };
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
-// const uploadImageByFile = (e)=>{}
+const uploadImageByFile = (e) => {
+  return uploadImage(e)
+    .then((url) => {
+      if (url) {
+        return {
+          success: 1,
+          file: { url },
+        };
+      }
+    })
+    .catch((error) => {});
+};
 
 export const tools = {
   embed: Embed,
@@ -34,7 +49,7 @@ export const tools = {
     config: {
       uploader: {
         uploadByUrl: uploadImageByUrl,
-        // uploadByFile:
+        uploadByFile: uploadImageByFile,
       },
     },
   },

@@ -16,19 +16,27 @@ const BlogStructure = {
 };
 
 export const EditorContext = createContext({});
-
 const Editor = () => {
   const [blog, setBlog] = useState(BlogStructure);
   let {
+    userAuth,
     userAuth: { access_token },
   } = useContext(UserContext);
-  console.log(access_token);
   const [editorState, setEditorState] = useState("editor");
+  const [textEditor, setTextEditor] = useState({ isReady: false });
+  // console.log("Accesstoken @ EditorPage.jsx :", access_token);
   return (
     <EditorContext.Provider
-      value={{ blog, setBlog, editorState, setEditorState }}
+      value={{
+        blog,
+        setBlog,
+        editorState,
+        setEditorState,
+        textEditor,
+        setTextEditor,
+      }}
     >
-      {!access_token ? (
+      {!userAuth?.access_token ? (
         <Navigate to={"/signin"} />
       ) : editorState === "editor" ? (
         <BlogEditor />

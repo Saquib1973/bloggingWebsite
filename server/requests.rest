@@ -1,9 +1,34 @@
-POST http://localhost:3000/signup
-Content-Type: application/json
+# Request to let user sign up
 
+# POST http://localhost:3000/signup
+# Content-Type: application/json
+
+# {
+#     "fullname":"John",
+#     "email":"john@gmail.com",
+#     "password":"Saban1973"
+# }
+
+# Request to let user sign in
+
+# POST http://localhost:3000/signin
+# Content-Type: application/json
+
+# {
+#     "email":"john@gmail.com",
+#     "password":"Saban1973"
+# }
+
+
+# TestToken for a user
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODVhNmZmNDQxNjRhN2JlNzkyMjkzYiIsImlhdCI6MTcwMzI1Nzg1Nn0.gv3XOe7zyXqg9dPOusXzU3h9lmw8eeWbMFCUmOEUgiM
+
+
+# Route to let user post a blog
+POST http://localhost:3000/create-blog
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODVhNmZmNDQxNjRhN2JlNzkyMjkzYiIsImlhdCI6MTcwMzI1Nzg1Nn0.gv3XOe7zyXqg9dPOusXzU3h9lmw8eeWbMFCUmOEUgiM
 
 {
-    "fullname":"saquib ali",
-    "email":"saquib@gmail.com",
-    "password":"Saban1973"
+    "title":"test title"
 }

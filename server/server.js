@@ -56,6 +56,21 @@ const generateUploadURL = async () => {
 };
 //REST APIs
 
+const verifyJwt = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ error: "no access token" });
+  }
+  jwt.verify(token, process.env.SECRET_ACCESS_KEY, (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: "access token is invalid" });
+    }
+    req.user = req.id;
+    next();
+  });
+};
+
 const formatDataToSend = (user) => {
   const access_token = jwt.sign(
     { id: user._id },
@@ -208,6 +223,10 @@ server.post("/google-auth", async (req, res) => {
         err: "Failed to authenticate you with google , try with some other google account",
       });
     });
+});
+
+server.post("/create-blog", verifyJwt, (req, res) => {
+  return res.json(req.body);
 });
 
 //Listening backend

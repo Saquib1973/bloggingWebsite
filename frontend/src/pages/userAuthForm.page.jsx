@@ -82,7 +82,7 @@ const UserAuthForm = ({ type }) => {
     <AnimationWrapper keyValue={type}>
       <section className="h-cover flex items-center justify-center">
         <Toaster />
-        <form ref={authForm} action="" className="w-[80%] max-w-[400px]">
+        <form ref={authForm} action="" className="w-[80%] group max-w-[400px]">
           <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
             {type === "sign-in" ? "Welcome Back" : "Join Us Today"}
           </h1>
@@ -107,19 +107,37 @@ const UserAuthForm = ({ type }) => {
             icon={"fi-rr-key"}
           />
           <button
-            className="btn-dark center mt-14"
+            className="btn-dark center mt-10"
             type="submit"
             onClick={handleSubmit}
           >
             {type.replace("-", " ")}
           </button>
+          <div className="p-2 px-4 rounded-md w-auto bg-red/75 text-center tracking-tight sm:tracking-wider font-extralight text-white mt-5 mx-10">
+            It's recommended to{" "}
+            <Link
+              className="underline underline-offset-2 italic"
+              to={"/signup"}
+            >
+              Register
+            </Link>
+            {" or "}
+            <Link
+              className="underline underline-offset-2 italic"
+              to={"/signin"}
+            >
+              Login
+            </Link>{" "}
+            with your google account
+          </div>
+          <i className="mt-7 animate-bounce fi fi-sr-down flex items-center justify-center text-2xl "></i>
           <div className="w-full items-center flex gap-2 my-10 opacity-10 uppercase text-black font-bold">
             <hr className="w-1/2 border-black" />
             or
             <hr className="w-1/2 border-black" />
           </div>
           <button
-            className="btn-dark flex items-center gap-4 w-[90%] justify-center center"
+            className="btn-dark flex items-center gap-4 w-auto sm:w-[90%] justify-center center"
             onClick={handleGoogleAuth}
           >
             <img src={googleIcon} className="w-5" alt="google image" />

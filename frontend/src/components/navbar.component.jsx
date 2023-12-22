@@ -83,7 +83,7 @@ const Navbar = () => {
                 </Link>
                 <div className="relative cursor-pointer" onClick={handleClick}>
                   <div
-                    className="w-12 h-12 mt-1 relative"
+                    className="w-12 h-12 mt-1 relative p-0.5 active:bg-red rounded-full bg-grey transition-all duration-500"
                     ref={userNavPanelRef}
                   >
                     <img
