@@ -5,9 +5,12 @@ import { UserContext } from "../App";
 import UserNavigationPanel from "./user-navigation.component";
 
 const Navbar = () => {
+  // UseState
   const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
   const [userNavPanel, setUserNavPanel] = useState(false);
+  // UseRef
   const userNavPanelRef = useRef(null);
+  // Context
   const {
     userAuth,
     userAuth: { access_token, profile_img },

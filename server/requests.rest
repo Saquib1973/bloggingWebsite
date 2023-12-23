@@ -25,10 +25,16 @@
 
 
 # Route to let user post a blog
-POST http://localhost:3000/create-blog
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODVhNmZmNDQxNjRhN2JlNzkyMjkzYiIsImlhdCI6MTcwMzI1Nzg1Nn0.gv3XOe7zyXqg9dPOusXzU3h9lmw8eeWbMFCUmOEUgiM
+# POST http://localhost:3000/create-blog
+# Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODVhNmZmNDQxNjRhN2JlNzkyMjkzYiIsImlhdCI6MTcwMzMxODQ5N30.gkEEZjAa5t01ePE-UpEuax9oLzD105hmwPD1IS-gARw
 
-{
-    "title":"test title"
-}
+# {
+#     "title":"test- title",
+#     "banner":"testBanner.com",
+#     "description":"test description",
+#     "content":{
+#         "blocks":[1,2]
+#     },
+#     "tags":["tag1","tag2"]
+# }

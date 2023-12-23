@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef } from "react";
-import { Link, Navigate } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import logo from "../imgs/logo.png";
 import AnimationWrapper from "./../common/page-animation";
 import defaultBanner from "../imgs/blog banner.png";
@@ -8,7 +8,15 @@ import { Toaster, toast } from "react-hot-toast";
 import { EditorContext } from "../pages/editor.pages";
 import EditorJS from "@editorjs/editorjs";
 import { tools } from "./tools.component";
+import axios from "axios";
+import { UserContext } from "../App";
 const BlogEditor = () => {
+  // constants
+  const navigate = useNavigate();
+  // Context imports
+  let {
+    userAuth: { access_token },
+  } = useContext(UserContext);
   let {
     blog: { title, banner, content, tags, description },
     setEditorState,
@@ -18,16 +26,20 @@ const BlogEditor = () => {
     textEditor,
     setTextEditor,
   } = useContext(EditorContext);
+  // UseEffect to establish EditorJs for once
   useEffect(() => {
-    setTextEditor(
-      new EditorJS({
-        holderId: "textEditor",
-        data: content,
-        tools: tools,
-        placeholder: "Lets write something",
-      })
-    );
+    if (!textEditor.isReady) {
+      setTextEditor(
+        new EditorJS({
+          holderId: "textEditor",
+          data: content,
+          tools: tools,
+          placeholder: "Lets write something",
+        })
+      );
+    }
   }, []);
+  // Function to handle banner upload
   const handleBannerUpload = (e) => {
     let img = e.target.files[0];
     if (img) {
@@ -46,12 +58,13 @@ const BlogEditor = () => {
         });
     }
   };
+  // Function to handle key down , not letting user use enter key in title section
   const handleTitleKeyDown = (e) => {
-    // console.log(e);
     if (e.keyCode === 13) {
       e.preventDefault();
     }
   };
+  // Function to handle title change
   const handleTitleChange = (e) => {
     let input = e.target;
     input.style.height = "auto";
@@ -61,7 +74,9 @@ const BlogEditor = () => {
       title: input.value,
     });
   };
+  // Function to Publish a form
   const handlePublishForm = () => {
+    // Validations
     if (!banner.length) {
       toast.error("Upload a Blog Banner to publish it");
       setTimeout(() => {
@@ -93,37 +108,76 @@ const BlogEditor = () => {
         });
     }
   };
+  // function to save draft
+  const handleSaveDraft = (e) => {
+    if (e.target.className.includes("disable")) {
+      return;
+    }
+    if (!title.length) {
+      return toast.error("Write blog title before Saving it as a draft");
+    }
+    let loadingToast = toast.loading("Saving Draft...");
+    e.target.classList.add("disable");
+    if (textEditor.isReady) {
+      textEditor.save().then((content) => {
+        let blogObj = {
+          title,
+          banner,
+          description,
+          tags,
+          content,
+          draft: true,
+        };
+        axios
+          .post(import.meta.env.VITE_SERVER_DOMAIN + "/create-blog", blogObj, {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+          })
+          .then(() => {
+            e.target.classList.remove("disable");
+            toast.dismiss(loadingToast);
+            toast.success("Saved");
+            setTimeout(() => {
+              navigate("/");
+            }, 500);
+          })
+          .catch(({ response }) => {
+            e.target.classList.remove("disable");
+            toast.dismiss(loadingToast);
+            return toast.error(response.data.error);
+          });
+      });
+    }
+  };
+  // Message for user using Toast
   useEffect(() => {
     setTimeout(() => {
       toast(
         <div
-          className="w-full drop-shadow-md rounded-md p-4 bg-red/80 text-white"
+          className="w-full md:text-lg drop-shadow-md rounded-md p-4 bg-red/80 text-white"
           onClick={() => toast.remove()}
         >
           {"Dont reload ! before completing the blog . Data might be lost . "}
           <Link
             to={"/help"}
-            className="font-medium underline underline-offset-4"
+            // target="_blank"
+            className="font-medium md:text-lg underline underline-offset-4"
           >
             {"Need Help ?"}
           </Link>{" "}
-          {/* <i
-            className="fi fi-rr-rectangle-xmark absolute text-2xl -right-6 -top-6 text-black"
-          ></i> */}
         </div>,
         {
           duration: 10000,
           position: "bottom-right",
-          // id: toast,
         }
       );
-    }, 2000);
+    }, 1000);
   }, []);
-
   return (
     <>
       <Toaster gutter={10} />
-
+      {/* Navbar component for Editor section */}
       <nav className="navbar">
         <Link to={"/"} className="flex-none w-10">
           <img src={logo} alt="" />
@@ -135,7 +189,9 @@ const BlogEditor = () => {
           <button className="btn-dark py-2" onClick={handlePublishForm}>
             Publish
           </button>
-          <button className="btn-light py-2">Save Draft</button>
+          <button className="btn-light py-2" onClick={handleSaveDraft}>
+            Save Draft
+          </button>
         </div>
       </nav>
       <AnimationWrapper>

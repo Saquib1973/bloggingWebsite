@@ -6,6 +6,8 @@ import Quote from "@editorjs/quote";
 import Marker from "@editorjs/marker";
 import InlineCode from "@editorjs/inline-code";
 import { uploadImage } from "./../common/aws";
+
+// @Functions
 const uploadImageByUrl = (e) => {
   let link = new Promise((resolve, reject) => {
     try {
@@ -38,6 +40,7 @@ const uploadImageByFile = (e) => {
     .catch((error) => {});
 };
 
+// @Export function
 export const tools = {
   embed: Embed,
   list: {

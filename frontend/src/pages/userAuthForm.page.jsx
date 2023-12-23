@@ -9,12 +9,15 @@ import { storeInSession } from "../common/session";
 import { UserContext } from "../App";
 import { authWithGoogle } from "../common/firebase";
 const UserAuthForm = ({ type }) => {
+  // Context
   let {
     userAuth: { access_token },
     setUserAuth,
   } = useContext(UserContext);
+  // UseRef
   let authForm = useRef();
 
+  // Server call out function
   const userAuthThroughServer = (serverRoute, formData) => {
     axios
       .post(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData)
@@ -35,6 +38,7 @@ const UserAuthForm = ({ type }) => {
       });
   };
 
+  // Handle form submit for registration or login of a user
   const handleSubmit = (e) => {
     e.preventDefault();
     let serverRoute = type === "sign-in" ? "/signin" : "/signup";
@@ -44,6 +48,7 @@ const UserAuthForm = ({ type }) => {
       formData[key] = value;
     }
     let { fullname, email, password } = formData;
+    // Frontend validations
     let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
     if (fullname) {
@@ -58,13 +63,12 @@ const UserAuthForm = ({ type }) => {
       );
     userAuthThroughServer(serverRoute, formData);
   };
+  // Hanlde Google auth registration and login
   const handleGoogleAuth = (e) => {
     e.preventDefault();
     authWithGoogle()
       .then((user) => {
         let serverRoute = "/google-auth";
-
-        // Ensure that user and user.accessToken are not undefined
         let formData = {
           access_token: user && user.accessToken ? user.accessToken : "",
         };
@@ -75,7 +79,6 @@ const UserAuthForm = ({ type }) => {
         return console.log(err);
       });
   };
-
   return access_token ? (
     <Navigate to={"/"} />
   ) : (
@@ -128,7 +131,10 @@ const UserAuthForm = ({ type }) => {
             >
               Login
             </Link>{" "}
-            with your google account
+            {"with your google account.  "}
+            <Link to={"/help"} className="underline">
+              Help?
+            </Link>
           </div>
           <i className="mt-7 animate-bounce fi fi-sr-down flex items-center justify-center text-2xl "></i>
           <div className="w-full items-center flex gap-2 my-10 opacity-10 uppercase text-black font-bold">

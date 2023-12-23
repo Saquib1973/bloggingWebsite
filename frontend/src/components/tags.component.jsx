@@ -2,15 +2,19 @@ import React, { useContext } from "react";
 import { EditorContext } from "../pages/editor.pages";
 
 const Tag = ({ tag, tagIndex }) => {
+  // @Context
   let {
     blog: { tags },
     blog,
     setBlog,
   } = useContext(EditorContext);
+  // @Functions
+  // Function to delete tag
   const handleTagDelete = () => {
     tags = tags.filter((item) => item != tag);
     setBlog({ ...blog, tags });
   };
+  // Function to handle tag editing
   const handleTagEdit = (e) => {
     if (e.keyCode === 13 || e.keyCode === 188) {
       e.preventDefault();
@@ -20,6 +24,7 @@ const Tag = ({ tag, tagIndex }) => {
       e.target.setAttribute("contentEditable", false);
     }
   };
+  // Function to enable tag editable functionality
   const setEditable = (e) => {
     e.target.setAttribute("contentEditable", true), e.target.focus();
   };
@@ -27,7 +32,7 @@ const Tag = ({ tag, tagIndex }) => {
     <div className="relative p-2 mt-2 mr-2 px-5 bg-white rounded-full inline-block hover:bg-opacity-50 pr-10">
       <p
         className="outline-none"
-        // onClick={setEditable}
+        onClick={setEditable}
         onKeyDown={handleTagEdit}
       >
         {tag}
