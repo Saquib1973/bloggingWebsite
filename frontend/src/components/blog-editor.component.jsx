@@ -155,21 +155,21 @@ const BlogEditor = () => {
     setTimeout(() => {
       toast(
         <div
-          className="w-full md:text-lg drop-shadow-md rounded-md p-4 bg-red/80 text-white"
+          className="w-full text-sm md:text-lg drop-shadow-md rounded-md p-2 md:p-4 bg-red/80 text-white"
           onClick={() => toast.remove()}
         >
           {"Dont reload ! before completing the blog . Data might be lost . "}
           <Link
             to={"/help"}
             // target="_blank"
-            className="font-medium md:text-lg underline underline-offset-4"
+            className="font-medium underline underline-offset-4"
           >
             {"Need Help ?"}
           </Link>{" "}
         </div>,
         {
           duration: 10000,
-          position: "bottom-right",
+          position: "top-center",
         }
       );
     }, 1000);
