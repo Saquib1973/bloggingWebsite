@@ -17,11 +17,15 @@ const BlogPostCard = ({ content, author }) => {
   return (
     <Link
       to={`/blogs/${id}`}
-      className="flex items-center gap-8 border-b hover:bg-grey/60 hover:shadow-md p-4 rounded-md transition-all duration-500 mx-0.5 border-grey pb-5 mb-4"
+      className="flex items-center gap-8 border-b border-grey group p-4 mx-0.5  pb-5 mb-4"
     >
       <div className="w-full">
         <div className="flex gap-2 items-center mb-7 text-dark-grey">
-          <img src={profile_img} className="w-6 h-6 rounded-full" alt="" />
+          <img
+            src={profile_img}
+            className="w-6 h-6 p-0.5 bg-transparent group-hover:bg-red transition-all duration-500 rounded-full"
+            alt=""
+          />
           <p className="line-clamp-1 ">
             {fullname} @{username}
           </p>

@@ -38,3 +38,35 @@
 #     },
 #     "tags":["tag1","tag2"]
 # }
+
+# POST  http://localhost:3000/latest-blogs
+# Content-Type: application/json
+
+# {
+#     "page":"1"
+# }
+
+# GET http://localhost:3000/trending-blogs
+
+# POST http://localhost:3000/all-latest-blogs-count
+# Content-Type: application/json
+
+# {
+    
+# }
+
+# POST http://localhost:3000/search-blogs
+# Content-Type: application/json
+
+# {
+#     "page":"1",
+#     "tag":"bb"
+# }
+
+
+POST http://localhost:3000/search-blogs-count
+Content-Type: application/json
+
+{
+    "tag":"jee"
+}

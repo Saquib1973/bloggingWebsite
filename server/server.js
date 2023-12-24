@@ -302,8 +302,10 @@ server.post("/create-blog", verifyJwt, (req, res) => {
     });
 });
 //  route to get all blogs
-server.get("/latest-blogs", (req, res) => {
-  const maxLimit = 10;
+server.post("/latest-blogs", (req, res) => {
+  let { page } = req.body;
+
+  const maxLimit = 4;
   Blog.find({ draft: false })
     .populate(
       "author",
@@ -311,6 +313,7 @@ server.get("/latest-blogs", (req, res) => {
     )
     .sort({ publishedAt: -1 })
     .select("blog_id title description banner activity tags publishedAt -_id")
+    .skip((page - 1) * maxLimit)
     .limit(maxLimit)
     .then((blogs) => {
       return res.status(200).json({ blogs });
@@ -335,6 +338,46 @@ server.get("/trending-blogs", (req, res) => {
     .limit(5)
     .then((blogs) => {
       return res.status(200).json({ blogs });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error: error.message });
+    });
+});
+server.post("/search-blogs", (req, res) => {
+  let { tag, page } = req.body;
+  let findQuery = { tags: tag, draft: false };
+  let maxLimit = 3;
+  Blog.find(findQuery)
+    .populate(
+      "author",
+      "personal_info.profile_img  personal_info.username personal_info.fullname -_id"
+    )
+    .sort({ publishedAt: -1 })
+    .select("blog_id title description banner activity tags publishedAt -_id")
+    .skip((page - 1) * maxLimit)
+    .limit(maxLimit)
+    .then((blogs) => {
+      return res.status(200).json({ blogs });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error: error.message });
+    });
+});
+server.post("/all-latest-blogs-count", (req, res) => {
+  Blog.countDocuments({ draft: false })
+    .then((count) => {
+      return res.status(200).json({ totalDocs: count });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error: error.message });
+    });
+});
+server.post("/search-blogs-count", (req, res) => {
+  let { tag } = req.body;
+  Blog.countDocuments({ tags: tag, draft: false })
+    .then((count) => {
+      console.log(count);
+      return res.status(200).json({ totalDocs: count });
     })
     .catch((error) => {
       return res.status(500).json({ error: error.message });
