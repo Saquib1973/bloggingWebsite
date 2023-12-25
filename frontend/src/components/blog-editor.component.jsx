@@ -17,7 +17,7 @@ const BlogEditor = () => {
   let {
     userAuth: { access_token },
   } = useContext(UserContext);
-  const {
+  let {
     blog: { title, banner, content, tags, description },
     setEditorState,
     editorState,
@@ -174,7 +174,6 @@ const BlogEditor = () => {
       );
     }, 1000);
   }, []);
-
   return (
     <>
       <Toaster gutter={10} />
