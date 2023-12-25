@@ -28,7 +28,7 @@ const UserNavigationPanel = () => {
         </Link>
         <Link to={`/user/${username}`} className="link flex gap-2 pl-8 py-4">
           <i className="fi fi-rr-user"></i>
-          profile
+          Profile
         </Link>
         <Link to={`/dashboard/blog`} className="link flex gap-2 pl-8 py-4">
           <i className="fi fi-rr-dashboard"></i>

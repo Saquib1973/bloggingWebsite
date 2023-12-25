@@ -64,9 +64,16 @@
 # }
 
 
-POST http://localhost:3000/search-blogs-count
+# POST http://localhost:3000/search-blogs-count
+# Content-Type: application/json
+
+# {
+#     "tag":"jee"
+# }
+
+POST http://localhost:3000/get-profile
 Content-Type: application/json
 
 {
-    "tag":"jee"
+    "username":"saquib"
 }
