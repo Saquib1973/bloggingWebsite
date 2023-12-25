@@ -387,7 +387,6 @@ server.post("/search-blogs-count", (req, res) => {
   }
   Blog.countDocuments(findQuery)
     .then((count) => {
-      console.log(count);
       return res.status(200).json({ totalDocs: count });
     })
     .catch((error) => {
