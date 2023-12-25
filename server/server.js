@@ -30,25 +30,12 @@ server.use(express.json());
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccountKey),
 });
-//connect database
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB, {
-      autoIndex: true,
-    });
-    console.log("Db connection established");
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-connectDB();
 //setting up aws bucket
 const s3 = new aws.S3({
   region: "ap-south-1",
   accessKeyId: process.env.AWS_ACCESS_KEY,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
-
 // #Functions
 // function to generate a url on which image to be uploaded
 const generateUploadURL = async () => {
@@ -100,7 +87,6 @@ const generateUsername = async (email) => {
   }
   return username;
 };
-
 // #REST APIs
 //route to upload image url
 server.get("/get-upload-url", (req, res) => {
@@ -408,9 +394,52 @@ server.post("/search-users", (req, res) => {
       return res.status(500).json({ error: error.message });
     });
 });
-/*
-########Listening backend########
-*/
+server.post("/get-profile", (req, res) => {
+  let { username } = req.body;
+  User.findOne({ "personal_info.username": username })
+    .select("-personal_info.password -google_auth -updatedAt -blogs ")
+    .then((user) => {
+      return res.status(200).json(user);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error: error.message });
+    });
+});
+//connect database
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB, {
+      autoIndex: true,
+    });
+    console.log("Db connection established");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+connectDB();
+// Health check endpoint
+server.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
+// Error handling for unhandled rejections
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  // Handle the error appropriately
+});
+
+// Graceful shutdown
+process.on("SIGINT", () => {
+  console.log("Received SIGINT. Shutting down gracefully...");
+
+  // Perform cleanup tasks and close connections
+  mongoose.connection.close(() => {
+    console.log("MongoDB connection closed.");
+    process.exit(0);
+  });
+});
+
+// Listening backend
 server.listen(PORT, () => {
-  console.log(`listening on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });
