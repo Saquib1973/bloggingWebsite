@@ -24,27 +24,6 @@ let PORT = 3000;
 // #Initialization
 const server = express();
 server.use(cors());
-
-const prodOrigins = [process.env.ORIGIN_1, process.env.ORIGIN_2];
-const devorigin = ["http://localhost:5173"];
-const allowedOrigins =
-  process.env.NODE_ENV === "production" ? prodOrigins : devorigin;
-
-server.use(
-  cors({
-    origin: (origin, callback) => {
-      if (allowedOrigins.includes(origin)) {
-        console.log(origin, allowedOrigins);
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  })
-);
-
 dotenv.config();
 server.use(express.json());
 // Google auth initialization
