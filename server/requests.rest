@@ -71,9 +71,16 @@
 #     "tag":"jee"
 # }
 
-POST http://localhost:3000/get-profile
+# POST http://localhost:3000/get-profile
+# Content-Type: application/json
+
+# {
+#     "username":"saquib"
+# }
+
+POST http://localhost:3000/get-blog
 Content-Type: application/json
 
 {
-    "username":"saquib"
+    "blog_id":"Beyond-Horizons-Saquib-Ali-s-Uncharted-OdysseywicQhXNKaIWxjnmkupR5B"
 }

@@ -383,7 +383,6 @@ server.post("/search-blogs-count", (req, res) => {
       return res.status(500).json({ error: error.message });
     });
 });
-
 server.post("/search-users", (req, res) => {
   let { query } = req.body;
   User.find({ "personal_info.username": new RegExp(query, "i") })
@@ -409,6 +408,33 @@ server.post("/get-profile", (req, res) => {
       return res.status(500).json({ error: error.message });
     });
 });
+server.post("/get-blog", (req, res) => {
+  let { blog_id } = req.body;
+  const inceremetVal = 1;
+  Blog.findOneAndUpdate(
+    { blog_id },
+    { $inc: { "activity.total_reads": inceremetVal } }
+  )
+    .populate(
+      "author",
+      "personal_info.fullname personal_info.username personal_info.profile_img"
+    )
+    .select(
+      "title description content banner activity publishedAt  blog_id tags"
+    )
+    .then((blog) => {
+      User.findOneAndUpdate(
+        { "personal_info.username": blog.author.personal_info.username },
+        { $inc: { "account_info.total_reads": inceremetVal } }
+      ).catch((err) => {
+        return res.status(500).json({ error: err.message });
+      });
+      return res.status(200).json({ blog });
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: err.message });
+    });
+});
 //connect database
 const connectDB = async () => {
   try {
@@ -425,24 +451,20 @@ connectDB();
 server.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
-
 // Error handling for unhandled rejections
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
   // Handle the error appropriately
 });
-
 // Graceful shutdown
 process.on("SIGINT", () => {
   console.log("Received SIGINT. Shutting down gracefully...");
-
   // Perform cleanup tasks and close connections
   mongoose.connection.close(() => {
     console.log("MongoDB connection closed.");
     process.exit(0);
   });
 });
-
 // Listening backend
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
