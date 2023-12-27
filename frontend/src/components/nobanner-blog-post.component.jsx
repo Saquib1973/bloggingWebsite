@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { getDay } from "../common/date";
+import { scrollToTop } from "../App";
 
 const MinimalBlogPostCard = ({ blog, index }) => {
   let {
@@ -15,6 +16,7 @@ const MinimalBlogPostCard = ({ blog, index }) => {
     <Link
       to={`/blogs/${id}`}
       className={`flex gap-5 mb-4 hover:drop-shadow-md group`}
+      onClick={scrollToTop}
     >
       <h1 className="blog-index group-hover:text-black transition-all duration-500">
         {index < 10 ? "0" + (index + 1) : index}

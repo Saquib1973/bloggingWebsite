@@ -9,7 +9,7 @@ import { EditorContext } from "../pages/editor.pages";
 import EditorJS from "@editorjs/editorjs";
 import { tools } from "./tools.component";
 import axios from "axios";
-import { UserContext } from "../App";
+import { UserContext, scrollToTop } from "../App";
 const BlogEditor = () => {
   // constants
   const navigate = useNavigate();
@@ -186,7 +186,13 @@ const BlogEditor = () => {
           {title.length ? title : "New Blog"}
         </p>
         <div className="flex gap-4 ml-auto">
-          <button className="btn-dark py-2" onClick={handlePublishForm}>
+          <button
+            className="btn-dark py-2"
+            onClick={() => {
+              handlePublishForm();
+              scrollToTop();
+            }}
+          >
             Publish
           </button>
           <button className="btn-light py-2" onClick={handleSaveDraft}>

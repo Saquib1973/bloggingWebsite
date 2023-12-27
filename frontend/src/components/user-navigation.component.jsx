@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import AnimationWrapper from "../common/page-animation";
 import { Link } from "react-router-dom";
-import { UserContext } from "../App";
+import { UserContext, scrollToTop } from "../App";
 import { removeFromSession } from "../common/session";
 
 const UserNavigationPanel = () => {
@@ -22,21 +22,34 @@ const UserNavigationPanel = () => {
       className={"absolute right-0 z-50 mt-2"}
     >
       <div className="bg-white absolute right-0 border border-grey w-60 duration-200  text-left">
-        <Link to={"/editor"} className="flex gap-2 link md:hidden pl-8 py-4">
+        <Link
+          to={"/editor"}
+          className="flex gap-2 link md:hidden pl-8 py-4"
+          onClick={scrollToTop}
+        >
           <i className="fi fi-rr-file-edit"></i>
           Write
         </Link>
-        <Link to={`/user/${username}`} className="link flex gap-2 pl-8 py-4">
+        <Link
+          to={`/user/${username}`}
+          className="link flex gap-2 pl-8 py-4"
+          onClick={scrollToTop}
+        >
           <i className="fi fi-rr-user"></i>
           Profile
         </Link>
-        <Link to={`/dashboard/blog`} className="link flex gap-2 pl-8 py-4">
+        <Link
+          to={`/dashboard/blog`}
+          className="link flex gap-2 pl-8 py-4"
+          onClick={scrollToTop}
+        >
           <i className="fi fi-rr-dashboard"></i>
           Dashboard
         </Link>
         <Link
           to={`/settings/edit-profile`}
           className="link flex gap-2 pl-8 py-4"
+          onClick={scrollToTop}
         >
           <i className="fi fi-rr-settings"></i>
           Settings

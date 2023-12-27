@@ -2,6 +2,7 @@ import React from "react";
 import AnimationWrapper from "../common/page-animation";
 import { getDay } from "../common/date";
 import { Link } from "react-router-dom";
+import { scrollToTop } from "../App";
 
 const BlogPostCard = ({ content, author }) => {
   let {
@@ -18,6 +19,7 @@ const BlogPostCard = ({ content, author }) => {
     <Link
       to={`/blogs/${id}`}
       className="flex items-center gap-8 border-b border-grey group p-4 mx-0.5  pb-5 mb-4"
+      onClick={scrollToTop}
     >
       <div className="w-full">
         <div className="flex gap-2 items-center mb-7 text-dark-grey">

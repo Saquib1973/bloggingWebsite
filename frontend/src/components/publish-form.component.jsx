@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 const PublishForm = () => {
   // constants
   const characterLimit = 200;
+  const minimumDescriptionLength = 50;
   const tagLimit = 10;
   const navigate = useNavigate();
   // Context
@@ -63,10 +64,16 @@ const PublishForm = () => {
     if (!title.length) {
       return toast.error("Write blog title before publishing it");
     }
-    if (!description.length || description.length > characterLimit) {
-      return toast.error("Write blog description before publishing it");
+    if (
+      !description.length &&
+      description.length > characterLimit &&
+      description.length < minimumDescriptionLength
+    ) {
+      return toast.error(
+        "Write blog description before publishing it , it should be of length 50 - 200 words"
+      );
     }
-    if (!tags.length || tags.length > tagLimit) {
+    if (!tags.length && tags.length > tagLimit) {
       return toast.error("Write blog tags before publishing it");
     }
     let loadingToast = toast.loading("Publishing...");

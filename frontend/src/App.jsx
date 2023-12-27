@@ -11,9 +11,16 @@ import PageNotFound from "./pages/404.page";
 import ProfilePage from "./pages/profile.page";
 import ShowLogo from "./components/show-logo.component";
 import BlogPage from "./pages/blog.page";
+import LoginPage from "./pages/login.page";
+import SignUp from "./pages/signUp.page";
 
 export const UserContext = createContext({});
-
+export const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
 const App = () => {
   let { pathname } = useLocation();
   const [userAuth, setUserAuth] = useState({});
@@ -43,8 +50,10 @@ const App = () => {
           <Route path="/editor" element={<Editor />} />
           <Route path="/" element={<Navbar showLogo={showLogo} />}>
             <Route index element={<Home />} />
-            <Route path="signin" element={<UserAuthForm type={"sign-in"} />} />
-            <Route path="signup" element={<UserAuthForm type={"sign-up"} />} />
+            {/* <Route path="signin" element={<UserAuthForm type={"sign-in"} />} /> */}
+            {/* <Route path="signup" element={<UserAuthForm type={"sign-up"} />} /> */}
+            <Route path="auth/signin" element={<LoginPage />} />
+            <Route path="auth/signup" element={<SignUp />} />
             <Route path="search/:query" element={<SearchPage />} />
             <Route path="help" element={<Help />} />
             <Route path="user/:id" element={<ProfilePage />} />

@@ -134,7 +134,6 @@ server.post("/signup", (req, res) => {
           return res.status(500).json({ error: "Email already exists" });
         return res.status(500).json({ error: err.message });
       });
-    console.log(hashedPassword);
   });
 });
 // route to signin

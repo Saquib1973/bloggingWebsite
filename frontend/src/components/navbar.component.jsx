@@ -1,7 +1,7 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import logo from "../imgs/logo.png";
-import { UserContext } from "../App";
+import { UserContext, scrollToTop } from "../App";
 import UserNavigationPanel from "./user-navigation.component";
 
 const Navbar = () => {
@@ -52,7 +52,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="navbar">
-        <Link className="flex-none w-10" to={"/"}>
+        <Link className="flex-none w-10" to={"/"} onClick={scrollToTop}>
           <img src={logo} alt="logo" />
         </Link>
         <div
@@ -83,13 +83,14 @@ const Navbar = () => {
             <Link
               to={"/editor"}
               className="hidden md:flex gap-2 link rounded-md hover:drop-shadow-sm"
+              onClick={scrollToTop}
             >
               <p>Write</p>
               <i className="fi fi-rr-file-edit"></i>
             </Link>
             {access_token ? (
               <>
-                <Link to={"/dashboard/notification"}>
+                <Link to={"/dashboard/notification"} onClick={scrollToTop}>
                   <button className="w-12 h-12 rounded-full bg-grey hover:bg-black/10 relative">
                     <i className="fi fi-rr-bell text-2xl block mt-1"></i>
                   </button>
@@ -110,10 +111,13 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Link className="btn-dark py-2 " to={"/signin"}>
+                <Link className="btn-dark py-2 " to={"/auth/signin"}>
                   SignIn
                 </Link>
-                <Link className="btn-light py-2 hidden md:block" to={"/signup"}>
+                <Link
+                  className="btn-light py-2 hidden md:block"
+                  to={"/auth/signup"}
+                >
                   SignUp
                 </Link>
               </>

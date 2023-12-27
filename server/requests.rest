@@ -82,5 +82,5 @@ POST http://localhost:3000/get-blog
 Content-Type: application/json
 
 {
-    "blog_id":"Beyond-Horizons-Saquib-Ali-s-Uncharted-OdysseywicQhXNKaIWxjnmkupR5B"
+    "blog_id":"saquib1NPOaJrTgnhlkiVZwEmVIa"
 }

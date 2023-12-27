@@ -40,7 +40,7 @@ const Editor = () => {
       }}
     >
       {!userAuth?.access_token ? (
-        <Navigate to={"/signin"} />
+        <Navigate to={"/auth/signin"} />
       ) : editorState === "editor" ? (
         <BlogEditor />
       ) : (

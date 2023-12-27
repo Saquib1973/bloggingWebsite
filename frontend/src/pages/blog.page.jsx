@@ -6,6 +6,8 @@ import Loader from "../components/loader.component";
 import { getDay } from "./../common/date";
 import BlogInteraction from "../components/blog-interaction.component";
 import BlogPostCard from "./../components/blog-post.component";
+import toast, { Toaster } from "react-hot-toast";
+import { scrollToTop } from "../App";
 export const blogStructure = {
   title: "",
   description: "",
@@ -47,14 +49,34 @@ const BlogPage = () => {
           .then(({ data }) => {
             console.log(data);
             setSimilarBlogs(data?.blogs);
-          });
+          })
+          .catch(
+            ({
+              response: {
+                data: { error },
+              },
+            }) => {
+              console.log(error);
+            }
+          );
         setBlog(blog);
         setLoading(false);
       })
-      .catch((err) => {
-        setLoading(false);
-        console.log(err);
-      });
+      .catch(
+        ({
+          response: {
+            data: { error },
+          },
+        }) => {
+          setLoading(false);
+          toast.error(
+            error.includes("Cannot read properties")
+              ? "Invalid url"
+              : "Something went wrong"
+          );
+          console.log(error);
+        }
+      );
   };
   const resetState = () => {
     setBlog(blogStructure);
@@ -68,6 +90,7 @@ const BlogPage = () => {
 
   return (
     <AnimationWrapper>
+      <Toaster />
       {loading ? (
         <Loader />
       ) : (
@@ -92,6 +115,7 @@ const BlogPage = () => {
                     <br />@
                     <Link
                       to={`/user/${author_username}`}
+                      onClick={scrollToTop}
                       className="underline underline-offset-2 lowercase"
                     >
                       {author_username}
