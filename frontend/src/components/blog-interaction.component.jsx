@@ -47,7 +47,7 @@ const BlogInteraction = () => {
             </Link>
           )}
           <Link
-            to={`https://twitter.com/intent/tweet?text=Read ${title}&url=${location.href}`}
+            to={`https://twitter.com/intent/tweet?text=Read ${title}&url=https://blogig.vercel.app${location.pathname}`}
             className="mt-1"
             target="_blank"
           >
@@ -57,7 +57,7 @@ const BlogInteraction = () => {
             className="fi fi-rr-share text-xl cursor-pointer"
             onClick={() => {
               navigator.clipboard.writeText(
-                `http://localhost:5173${location.pathname}`
+                `https://blogig.vercel.app${location.pathname}`
               );
               toast.success("Link Copied", {
                 position: "bottom-center",
