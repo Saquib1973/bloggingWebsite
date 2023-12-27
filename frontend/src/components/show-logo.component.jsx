@@ -8,17 +8,17 @@ const ShowLogo = () => {
       {/* Black div */}
       <motion.div
         className="fixed z-10 top-0 left-0 w-full h-full bg-dark-grey/20 "
-        initial={{ opacity: 0, y: 1300 }}
+        initial={{ opacity: 0, y: 1200 }}
         animate={{ opacity: 0.5, y: 0 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 1.9 }}
+        transition={{ duration: 2.5 }}
       />
       <motion.div
         className="fixed z-20 top-0 left-0 w-full h-full bg-dark-grey/20 "
-        initial={{ opacity: 0, y: -1300 }}
+        initial={{ opacity: 0, y: -1200 }}
         animate={{ opacity: 0.5, y: 0 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 1.9, delay: 0.1 }}
+        transition={{ duration: 1.8, delay: 0.2 }}
       />
       <div className="w-full z-30 flex items-center justify-center  flex-col relative">
         <motion.img
