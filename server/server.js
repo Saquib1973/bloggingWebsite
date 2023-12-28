@@ -36,7 +36,7 @@ const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
-// #Functions
+/*------------------------------------Functions------------------------------------- */
 // function to generate a url on which image to be uploaded
 const generateUploadURL = async () => {
   const date = new Date();
@@ -87,7 +87,7 @@ const generateUsername = async (email) => {
   }
   return username;
 };
-// #REST APIs
+/* --------------------------------------Routes------------------------------------ */
 //route to upload image url
 server.get("/get-upload-url", (req, res) => {
   generateUploadURL()
@@ -328,8 +328,10 @@ server.get("/trending-blogs", (req, res) => {
       return res.status(500).json({ error: error.message });
     });
 });
+// Route to search blogs depending on factors like tag, query, page, author . Also we can set the limit on the blogs to be fetched
 server.post("/search-blogs", (req, res) => {
   let { tag, query, page, author, limit, eliminate_blog } = req.body;
+  let maxLimit = limit ? limit : 4;
   let findQuery;
   if (tag) {
     findQuery = { tags: tag, draft: false, blog_id: { $ne: eliminate_blog } };
@@ -338,7 +340,6 @@ server.post("/search-blogs", (req, res) => {
   } else if (author) {
     findQuery = { author, draft: false };
   }
-  let maxLimit = limit ? limit : 4;
   Blog.find(findQuery)
     .populate(
       "author",
@@ -355,6 +356,7 @@ server.post("/search-blogs", (req, res) => {
       return res.status(500).json({ error: error.message });
     });
 });
+// Route to get the total count of the latest blogs
 server.post("/all-latest-blogs-count", (req, res) => {
   Blog.countDocuments({ draft: false })
     .then((count) => {
@@ -364,6 +366,7 @@ server.post("/all-latest-blogs-count", (req, res) => {
       return res.status(500).json({ error: error.message });
     });
 });
+// Route to get the count of the blogs searched based on the given parameters previously
 server.post("/search-blogs-count", (req, res) => {
   let { tag, query, author } = req.body;
   let findQuery;
@@ -382,6 +385,7 @@ server.post("/search-blogs-count", (req, res) => {
       return res.status(500).json({ error: error.message });
     });
 });
+// Route to get a searched user based on the search query provided by user , only limited data of user is brought as we dont need all informations
 server.post("/search-users", (req, res) => {
   let { query } = req.body;
   User.find({ "personal_info.username": new RegExp(query, "i") })
@@ -396,6 +400,7 @@ server.post("/search-users", (req, res) => {
       return res.status(500).json({ error: error.message });
     });
 });
+// Route to get complete detail of a user based on his user id
 server.post("/get-profile", (req, res) => {
   let { username } = req.body;
   User.findOne({ "personal_info.username": username })
@@ -407,6 +412,7 @@ server.post("/get-profile", (req, res) => {
       return res.status(500).json({ error: error.message });
     });
 });
+// Route to get a particular complete blog
 server.post("/get-blog", (req, res) => {
   let { blog_id } = req.body;
   const inceremetVal = 1;
@@ -434,6 +440,7 @@ server.post("/get-blog", (req, res) => {
       return res.status(500).json({ error: err.message });
     });
 });
+/* -------------------------------Database connection-------------------------------- */
 //connect database
 const connectDB = async () => {
   try {

@@ -8,6 +8,8 @@ import BlogInteraction from "../components/blog-interaction.component";
 import BlogPostCard from "./../components/blog-post.component";
 import toast, { Toaster } from "react-hot-toast";
 import { scrollToTop } from "../App";
+import { motion, useScroll, useSpring } from "framer-motion";
+
 export const blogStructure = {
   title: "",
   description: "",
@@ -87,7 +89,8 @@ const BlogPage = () => {
     resetState();
     fetchBlog();
   }, [blog_id]);
-
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress);
   return (
     <AnimationWrapper>
       <Toaster />
@@ -96,6 +99,10 @@ const BlogPage = () => {
       ) : (
         <BlogContext.Provider value={{ blog, setBlog }}>
           <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
+            <motion.div
+              className=" top-[80px] left-0 right-0 fixed h-1 bg-red/80 origin-left"
+              style={{ scaleX }}
+            />
             <img
               src={banner}
               className="aspect-video rounded-md bg-grey"
