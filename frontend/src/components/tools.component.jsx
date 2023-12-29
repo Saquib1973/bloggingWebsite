@@ -6,6 +6,7 @@ import Quote from "@editorjs/quote";
 import Marker from "@editorjs/marker";
 import InlineCode from "@editorjs/inline-code";
 import { uploadImage } from "./../common/aws";
+import CodeTool from "@editorjs/code";
 
 // @Functions
 const uploadImageByUrl = (e) => {
@@ -68,6 +69,7 @@ export const tools = {
     class: Quote,
     inlineToolbar: true,
   },
+  code: CodeTool,
   marker: Marker,
   inlineCode: InlineCode,
 };

@@ -9,6 +9,7 @@ import BlogPostCard from "./../components/blog-post.component";
 import toast, { Toaster } from "react-hot-toast";
 import { scrollToTop } from "../App";
 import { motion, useScroll, useSpring } from "framer-motion";
+import BlogContent from "../components/blog-content.component";
 
 export const blogStructure = {
   title: "",
@@ -49,7 +50,6 @@ const BlogPage = () => {
             eliminate_blog: blog_id,
           })
           .then(({ data }) => {
-            console.log(data);
             setSimilarBlogs(data?.blogs);
           })
           .catch(
@@ -136,7 +136,15 @@ const BlogPage = () => {
             </div>
             <BlogInteraction />
             {/* Blog Content */}
-
+            <div className="my-12 font-gelasio blog-page-content">
+              {content[0]?.blocks.map((block, index) => {
+                return (
+                  <div key={index} className="my-4 md:my-8">
+                    <BlogContent block={block} />
+                  </div>
+                );
+              })}
+            </div>
             <BlogInteraction />
             {similarBlogs !== null && similarBlogs.length && (
               <>
