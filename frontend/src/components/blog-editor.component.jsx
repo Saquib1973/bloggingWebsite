@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import logo from "../imgs/logo.png";
 import AnimationWrapper from "./../common/page-animation";
 import defaultBanner from "../imgs/blog banner.png";
@@ -11,6 +11,7 @@ import { tools } from "./tools.component";
 import axios from "axios";
 import { UserContext, scrollToTop } from "../App";
 const BlogEditor = () => {
+  let { blog_id } = useParams();
   // constants
   const navigate = useNavigate();
   // Context imports
@@ -32,7 +33,7 @@ const BlogEditor = () => {
       setTextEditor(
         new EditorJS({
           holderId: "textEditor",
-          data: content,
+          data: Array.isArray(content) ? content[0] : content,
           tools: tools,
           placeholder: "Lets write something",
         })
@@ -129,11 +130,15 @@ const BlogEditor = () => {
           draft: true,
         };
         axios
-          .post(import.meta.env.VITE_SERVER_DOMAIN + "/create-blog", blogObj, {
-            headers: {
-              Authorization: `Bearer ${access_token}`,
-            },
-          })
+          .post(
+            import.meta.env.VITE_SERVER_DOMAIN + "/create-blog",
+            { ...blogObj, id: blog_id },
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            }
+          )
           .then(() => {
             e.target.classList.remove("disable");
             toast.dismiss(loadingToast);

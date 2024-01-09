@@ -218,7 +218,7 @@ server.post("/google-auth", async (req, res) => {
 // route to create a blog
 server.post("/create-blog", verifyJwt, (req, res) => {
   let authorId = req.user;
-  let { title, description, banner, tags, content, draft } = req.body;
+  let { title, description, banner, tags, content, draft, id } = req.body;
   // validations
   if (!title.length) {
     return res
@@ -248,43 +248,66 @@ server.post("/create-blog", verifyJwt, (req, res) => {
   }
 
   let blogId =
+    id ||
     title
       .replace(/[^a-zA-Z0-9]/g, " ")
       .replace(/\s+/g, "-")
       .trim() + nanoid();
-  const blog = new Blog({
-    title,
-    description,
-    banner,
-    content,
-    tags,
-    author: authorId,
-    blog_id: blogId,
-    draft: Boolean(draft),
-  });
-  blog
-    .save()
-    .then((blog) => {
-      let incrementVal = draft ? 0 : 1;
-      User.findOneAndUpdate(
-        { _id: authorId },
-        {
-          $inc: { "account_info.total_posts": incrementVal },
-          $push: { blogs: blog._id },
-        }
-      )
-        .then((user) => {
-          return res.status(200).json({ id: blog.blog_id });
-        })
-        .catch((err) => {
-          console.log(err);
-          return res.status(500).json({ error: err.message });
+  if (id) {
+    Blog.findOneAndUpdate(
+      { blog_id: blogId },
+      {
+        title,
+        description,
+        banner,
+        content,
+        draft: Boolean(draft),
+        tags,
+      }
+    )
+      .then(() => {
+        return res.status(200).json({
+          id: blogId,
         });
-    })
-    .catch((err) => {
-      console.log(err);
-      return res.status(500).json({ error: err.message });
+      })
+      .catch((error) => {
+        return res.status(500).json({ error: error });
+      });
+  } else {
+    const blog = new Blog({
+      title,
+      description,
+      banner,
+      content,
+      tags,
+      author: authorId,
+      blog_id: blogId,
+      draft: Boolean(draft),
     });
+    blog
+      .save()
+      .then((blog) => {
+        let incrementVal = draft ? 0 : 1;
+        User.findOneAndUpdate(
+          { _id: authorId },
+          {
+            $inc: { "account_info.total_posts": incrementVal },
+            $push: { blogs: blog._id },
+          }
+        )
+          .then((user) => {
+            return res.status(200).json({ id: blog.blog_id });
+          })
+          .catch((err) => {
+            console.log(err);
+            return res.status(500).json({ error: err.message });
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(500).json({ error: err.message });
+      });
+  }
 });
 //  route to get all blogs
 server.post("/latest-blogs", (req, res) => {
@@ -414,8 +437,8 @@ server.post("/get-profile", (req, res) => {
 });
 // Route to get a particular complete blog
 server.post("/get-blog", (req, res) => {
-  let { blog_id } = req.body;
-  const inceremetVal = 1;
+  let { blog_id, draft, mode } = req.body;
+  const inceremetVal = mode !== "edit" ? 1 : 0;
   Blog.findOneAndUpdate(
     { blog_id },
     { $inc: { "activity.total_reads": inceremetVal } }
@@ -434,6 +457,9 @@ server.post("/get-blog", (req, res) => {
       ).catch((err) => {
         return res.status(500).json({ error: err.message });
       });
+      if (blog.draft && !draft) {
+        return res.status(500).json({ error: "You can not access draft blog" });
+      }
       return res.status(200).json({ blog });
     })
     .catch((err) => {

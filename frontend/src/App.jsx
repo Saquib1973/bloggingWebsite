@@ -30,6 +30,8 @@ const App = () => {
     setUserAuth(
       userInSession ? JSON.parse(userInSession) : { access_token: null }
     );
+  }, [sessionStorage]);
+  useEffect(() => {
     if (pathname === "/") {
       const hideLogoTimeout = setTimeout(() => {
         setShowLogo(false);
@@ -39,7 +41,7 @@ const App = () => {
     } else {
       setShowLogo(false);
     }
-  }, [sessionStorage, pathname]);
+  }, [pathname]);
 
   return (
     <UserContext.Provider value={{ userAuth, setUserAuth }}>
@@ -48,6 +50,7 @@ const App = () => {
       ) : (
         <Routes>
           <Route path="/editor" element={<Editor />} />
+          <Route path="/editor/:blog_id" element={<Editor />} />
           <Route path="/" element={<Navbar showLogo={showLogo} />}>
             <Route index element={<Home />} />
             {/* <Route path="signin" element={<UserAuthForm type={"sign-in"} />} /> */}

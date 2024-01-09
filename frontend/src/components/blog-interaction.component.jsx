@@ -8,10 +8,10 @@ const BlogInteraction = () => {
   const location = useLocation();
 
   let {
+    blog,
     blog: {
       title,
       blog_id,
-      activity,
       activity: { total_likes, total_comments },
       author: {
         personal_info: { username: author_username },
@@ -19,6 +19,7 @@ const BlogInteraction = () => {
       setBlog,
     },
   } = useContext(BlogContext);
+  // console.log("blog", blog);
   let {
     userAuth: { username },
   } = useContext(UserContext);

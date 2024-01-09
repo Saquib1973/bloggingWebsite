@@ -5,9 +5,10 @@ import { EditorContext } from "../pages/editor.pages";
 import Tag from "./tags.component";
 import axios from "axios";
 import { UserContext } from "../App";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const PublishForm = () => {
+  let { blog_id } = useParams();
   // constants
   const characterLimit = 200;
   const minimumDescriptionLength = 50;
@@ -87,11 +88,15 @@ const PublishForm = () => {
       draft: false,
     };
     axios
-      .post(import.meta.env.VITE_SERVER_DOMAIN + "/create-blog", blogObj, {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      })
+      .post(
+        import.meta.env.VITE_SERVER_DOMAIN + "/create-blog",
+        { ...blogObj, id: blog_id },
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      )
       .then(() => {
         e.target.classList.remove("disable");
         toast.dismiss(loadingToast);
@@ -108,7 +113,7 @@ const PublishForm = () => {
   };
   return (
     <AnimationWrapper>
-      <section className="w-auto items-center h-screen grid justify-center lg:grid-cols-2 py-16 lg:gap-4">
+      <section className="w-auto items-center h-screen grid justify-center lg:grid-cols-2 py-12 lg:gap-4 ">
         <Toaster />
         <button
           className="w-12 h-12 absolute right-[3vw] lg:right-[8vw] z-10 top-[2%] lg:top-[15vh]"
@@ -116,20 +121,22 @@ const PublishForm = () => {
         >
           <i className="fi fi-br-cross 2xl:text-3xl"></i>
         </button>
-        <div className="max-w-[550px] center md:bg-transparent bg-grey/40 md:shadow-none shadow-md p-4 md:px-8 rounded-md">
+        <div className="max-w-[450px] center md:bg-transparent bg-grey/40 md:shadow-none shadow-md p-4 md:px-8 rounded-md">
           <p className="text-dark-grey mb-1">Preview</p>
           <div className="w-full aspect-video rounded-lg overflow-hidden bg-grey mt-4">
             <img src={banner} alt="" className="p-0.5 shadow-sm rounded-md" />
           </div>
-          <h1 className=" text-2xl md:text-4xl mt-4 leading-tight font-medium line-clamp-2">
+          <h1 className=" text-2xl md:text-3xl xl:text-4xl mt-4 leading-tight font-medium line-clamp-2">
             {title}
           </h1>
-          <p className="font-gelasio line-clamp-2 text-base md:text-xl leading-7 mt-4">
+          <p className="font-gelasio line-clamp-2 text-base md:text-base xl:text-xl leading-7 mt-4">
             {description}
           </p>
-          <div className="flex gap-2">
-            {tags.map((tag) => (
-              <p className="text-dark-grey">#{tag}</p>
+          <div className="flex gap-2 line-clamp-1">
+            {tags.map((tag, i) => (
+              <p className="text-dark-grey text-sm" key={i}>
+                #{tag}
+              </p>
             ))}
           </div>
         </div>

@@ -7,14 +7,14 @@ const ShowLogo = () => {
     <div className="flex items-center min-h-screen">
       {/* Black div */}
       <motion.div
-        className="fixed z-10 top-0 left-0 w-full h-full bg-dark-grey/20 "
+        className="fixed z-10 top-0 left-0 w-full h-full bg-gradient-to-b from-dark-grey/10 to-twitter "
         initial={{ opacity: 0, y: 1200 }}
         animate={{ opacity: 0.5, y: 0 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 2.5 }}
       />
       <motion.div
-        className="fixed z-20 top-0 left-0 w-full h-full bg-dark-grey/20 "
+        className="fixed z-20 top-0 left-0 w-full h-full bg-gradient-to-t from-dark-grey/10 to-purple "
         initial={{ opacity: 0, y: -1200 }}
         animate={{ opacity: 0.5, y: 0 }}
         exit={{ opacity: 0 }}
