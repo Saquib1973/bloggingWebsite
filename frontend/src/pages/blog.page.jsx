@@ -30,6 +30,8 @@ const BlogPage = () => {
   const [blog, setBlog] = useState(blogStructure);
   const [similarBlogs, setSimilarBlogs] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [likeByUser, setLikeByUser] = useState(false);
+
   let {
     title,
     content,
@@ -97,7 +99,9 @@ const BlogPage = () => {
       {loading ? (
         <Loader />
       ) : (
-        <BlogContext.Provider value={{ blog, setBlog }}>
+        <BlogContext.Provider
+          value={{ blog, setBlog, likeByUser, setLikeByUser }}
+        >
           <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
             <motion.div
               className=" top-[80px] left-0 right-0 fixed h-1 bg-red/80 origin-left"
