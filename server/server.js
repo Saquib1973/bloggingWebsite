@@ -13,6 +13,7 @@ import cors from "cors";
 //#Schema Imports
 import User from "./Schema/User.js";
 import Blog from "./Schema/Blog.js";
+import Notification from "./Schema/Notification.js"
 
 //#Regex
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -466,6 +467,49 @@ server.post("/get-blog", (req, res) => {
       return res.status(500).json({ error: err.message });
     });
 });
+//Route to handle like of posts
+server.post('/like-blog',verifyJwt , (req,res)=>{
+  let user_id = req.user;
+  let {_id , likeByUser} = req.body;
+  let incrementValue = !likeByUser ? 1 : -1;
+  Blog.findOneAndUpdate({_id},{$inc:{"activity.total_likes":incrementValue}}).then(blog=>{
+    if(!likeByUser){
+      let like = new Notification({
+        type:"like",
+        blog : _id,
+        notification_for : blog.author,
+        user :user_id,
+      })
+      like.save().then(notification=>{
+        return res.status(200).json({
+          liked_by_user:true
+        })
+      });
+    }else{
+      Notification.findOneAndDelete({user:user_id,blog:_id,type:"like"}).then(data=>{
+        return res.status(200).json({
+          liked_by_user:false
+        })
+        }).catch(err=>{
+          return res.status(500).json({
+            error:err.message
+          })
+      })
+    }
+  })
+})
+
+server.post('/isLikedByUser',verifyJwt , (req,res)=>{
+  let user_id = req.user;
+  let {_id} = req.body;
+  Notification.exists({user:user_id,type:'like',blog:_id}).then(result=>{
+    return res.status(200).json(
+      {result}
+    )
+  }).catch(err=>{
+    return res.status(500).json({error:err.message})
+  })
+})
 /* -------------------------------Database connection-------------------------------- */
 //connect database
 const connectDB = async () => {
