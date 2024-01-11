@@ -8,6 +8,7 @@ const BlogInteraction = () => {
   const location = useLocation();
 
   let {
+    setCommentWrapper,
     blog,
     blog: {
       _id,
@@ -87,7 +88,11 @@ const BlogInteraction = () => {
             ></i>
           </button>
           <p className="text-dark-grey text-xl">{total_likes}</p>
-          <button className="w-10 h-10 rounded-full flex items-center bg-grey/80 justify-center">
+          <button className="w-10 h-10 rounded-full flex items-center bg-grey/80 justify-center"
+          onClick={()=>{
+            setCommentWrapper(prev=>!prev)
+          }}
+          >
             <i className="fi fi-rr-comment"></i>
           </button>
           <p className="text-dark-grey text-xl">{total_comments}</p>

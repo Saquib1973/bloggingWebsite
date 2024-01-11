@@ -10,6 +10,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { scrollToTop } from "../App";
 import { motion, useScroll, useSpring } from "framer-motion";
 import BlogContent from "../components/blog-content.component";
+import CommentContainer, { fetchComments } from "../components/comments.component";
 
 export const blogStructure = {
   title: "",
@@ -31,6 +32,8 @@ const BlogPage = () => {
   const [similarBlogs, setSimilarBlogs] = useState(null);
   const [loading, setLoading] = useState(true);
   const [likeByUser, setLikeByUser] = useState(false);
+  const [commentWrapper, setCommentWrapper] = useState(false);
+  const [totalParentCommentsLoaded, setTotalParentCommentsLoaded] = useState(0)
 
   let {
     title,
@@ -45,6 +48,8 @@ const BlogPage = () => {
     axios
       .post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog", { blog_id })
       .then(async ({ data: { blog } }) => {
+        blog.comments = await fetchComments({ blog_id: blog._id, setParentCommentCountFun: setTotalParentCommentsLoaded })
+        setBlog(blog);
         await axios
           .post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", {
             tag: blog?.tags[0],
@@ -63,21 +68,11 @@ const BlogPage = () => {
               console.log(error);
             }
           );
-        setBlog(blog);
         setLoading(false);
       })
       .catch(
-        ({
-          response: {
-            data: { error },
-          },
-        }) => {
+        (error) => {
           setLoading(false);
-          toast.error(
-            error.includes("Cannot read properties")
-              ? "Invalid url"
-              : "Something went wrong"
-          );
           console.log(error);
         }
       );
@@ -86,6 +81,9 @@ const BlogPage = () => {
     setBlog(blogStructure);
     setSimilarBlogs(null);
     setLoading(true);
+    setLikeByUser(false);
+    setCommentWrapper(false);
+    setTotalParentCommentsLoaded(0)
   };
   useEffect(() => {
     resetState();
@@ -100,9 +98,10 @@ const BlogPage = () => {
         <Loader />
       ) : (
         <BlogContext.Provider
-          value={{ blog, setBlog, likeByUser, setLikeByUser }}
+          value={{ blog, setBlog, likeByUser, setLikeByUser, commentWrapper, setCommentWrapper, totalParentCommentsLoaded, setTotalParentCommentsLoaded }}
         >
-          <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
+          <CommentContainer />
+          <div className={`max-w-[900px] center py-10 max-lg:px-[5vw] ${commentWrapper ? "opacity-50 max-sm:h-[calc(100vh-80px)] max-sm:overflow-hidden" : ""} `}>
             <motion.div
               className=" top-[80px] left-0 right-0 fixed h-1 bg-red/80 origin-left"
               style={{ scaleX }}
