@@ -27,7 +27,12 @@ export const fetchComments = async ({ skip = 0, blog_id, setParentCommentCountFu
 }
 
 const CommentContainer = () => {
-  let { blog: { title, comments: { results: commentsArr }, comments }, commentWrapper, setCommentWrapper } = useContext(BlogContext)
+  let { setBlog, blog, blog: { _id, activity: { total_parent_comments }, title, comments: { results: commentsArr }, comments }, commentWrapper, setCommentWrapper, totalParentCommentsLoaded, setTotalParentCommentsLoaded } = useContext(BlogContext);
+  const loadMoreComments = async () => {
+    let newCommentsArray = await fetchComments({ skip: totalParentCommentsLoaded, blog_id: _id, setParentCommentCountFun: setTotalParentCommentsLoaded, comment_array: commentsArr });
+    setBlog({ ...blog, comments: newCommentsArray })
+
+  }
   return (
     <div className={`max-sm:w-full fixed ${commentWrapper ? "top-0 sm:top-1/2 sm:-translate-y-[45%] sm:bottom-0" : "top-[100%] sm:bottom-[-100%]"} duration-700 max-sm:right-0 sm:bottom-0 sm:right-1/2 sm:translate-x-1/2 w-[80%] md:w-[70%] xl:w-[50%] min-w-[350px] h-full sm:h-[88%] rounded-xl z-50  bg-white shadow-2xl p-8 px-16 overflow-y-auto overflow-x-hidden`}>
       <div className='relative'>
@@ -57,6 +62,14 @@ const CommentContainer = () => {
             </AnimationWrapper>
           })
           : <NoDataMessage message={'No comments found'} />
+      }
+      {
+        total_parent_comments > totalParentCommentsLoaded ?
+          <button className='text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2
+          border-2 border-transparent active:border-dark-grey/50 transition-all duration-500 bg-grey/80 mx-auto
+          '
+            onClick={loadMoreComments}
+          >Load more</button> : ""
       }
     </div>
   )

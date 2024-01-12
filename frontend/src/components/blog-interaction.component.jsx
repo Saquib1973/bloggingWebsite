@@ -28,40 +28,40 @@ const BlogInteraction = () => {
     userAuth: { username, access_token },
   } = useContext(UserContext);
   useEffect(() => {
-    
-  
-    if(access_token){
-      axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/isLikedByUser",{
+
+
+    if (access_token) {
+      axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/isLikedByUser", {
         _id
-      },{
-        headers:{
+      }, {
+        headers: {
           'Authorization': `Bearer ${access_token}`
         }
-      }).then(({data:{result}})=>{
+      }).then(({ data: { result } }) => {
         setLikeByUser(Boolean(result))
-      }).catch(err=>{
+      }).catch(err => {
         console.log(err)
       })
-    }else{
+    } else {
 
     }
   }, [])
-  
+
   const handleLike = () => {
     if (access_token) {
       //like the blog
       setLikeByUser((prev) => !prev);
       !likeByUser ? total_likes++ : total_likes--;
       setBlog({ ...blog, activity: { ...activity, total_likes } });
-      axios.post(import.meta.env.VITE_SERVER_DOMAIN + '/like-blog',{
-        _id,likeByUser
-      },{
-        headers:{
+      axios.post(import.meta.env.VITE_SERVER_DOMAIN + '/like-blog', {
+        _id, likeByUser
+      }, {
+        headers: {
           'Authorization': `Bearer ${access_token}`
         }
-      }).then(({data})=>{
+      }).then(({ data }) => {
         // console.log(data)
-      }).catch(err=>{
+      }).catch(err => {
         console.log(err)
       })
     } else {
@@ -76,22 +76,20 @@ const BlogInteraction = () => {
       <div className="flex gap-6 justify-between">
         <div className="flex gap-6 items-center">
           <button
-            className={`w-10 h-10 rounded-full flex items-center justify-center ${
-              likeByUser ? "bg-red/40 text-red" : "bg-grey/80"
-            } group transition-all`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center ${likeByUser ? "bg-red/40 text-red" : "bg-grey/80"
+              } group transition-all`}
             onClick={handleLike}
           >
             <i
-              className={`fi fi-${
-                likeByUser ? "sr" : "rr"
-              }-heart group-active:text-red transition-all duration-200`}
+              className={`fi fi-${likeByUser ? "sr" : "rr"
+                }-heart group-active:text-red transition-all duration-200`}
             ></i>
           </button>
           <p className="text-dark-grey text-xl">{total_likes}</p>
           <button className="w-10 h-10 rounded-full flex items-center bg-grey/80 justify-center"
-          onClick={()=>{
-            setCommentWrapper(prev=>!prev)
-          }}
+            onClick={() => {
+              setCommentWrapper(prev => !prev)
+            }}
           >
             <i className="fi fi-rr-comment"></i>
           </button>
@@ -108,10 +106,10 @@ const BlogInteraction = () => {
           )}
           <Link
             to={`https://twitter.com/intent/tweet?text=Read ${title}&url=https://blogig.vercel.app${location.pathname}`}
-            className="mt-1"
+            className="mt-1 group"
             target="_blank"
           >
-            <i className="fi fi-brands-twitter text-xl hover:text-twitter "></i>
+            <i className="fi fi-brands-twitter text-xl group-hover:text-twitter "></i>
           </Link>
           <i
             className="fi fi-rr-share text-xl cursor-pointer"
