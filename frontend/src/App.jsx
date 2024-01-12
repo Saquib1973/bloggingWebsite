@@ -13,6 +13,7 @@ import ShowLogo from "./components/show-logo.component";
 import BlogPage from "./pages/blog.page";
 import LoginPage from "./pages/login.page";
 import SignUp from "./pages/signUp.page";
+import { Dev } from "./pages/dev.page";
 
 export const UserContext = createContext({});
 export const scrollToTop = () => {
@@ -62,6 +63,8 @@ const App = () => {
             <Route path="help" element={<Help />} />
             <Route path="user/:id" element={<ProfilePage />} />
             <Route path="blogs/:id" element={<BlogPage />} />
+            <Route path="dev" element={<Dev />} />
+
             <Route path="*" element={<PageNotFound />} />
           </Route>
         </Routes>

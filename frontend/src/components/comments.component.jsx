@@ -42,7 +42,7 @@ const CommentContainer = () => {
         <p className='text-lg mt-2 w-[70%] text-dark-grey line-clamp-1'>
           {title}
         </p>
-        <button className='absolute top-0 -right-5 flex items-center justify-center w-12 h-12 rounded-full hover:text-grey hover:bg-red/90 transition-all bg-grey'
+        <button className='absolute top-0 -right-5 flex items-center justify-center w-12 h-12 rounded-full hover:text-grey hover:bg-red/90 transition-all bg-grey/60'
           onClick={() => {
             setCommentWrapper(prev => !prev)
           }}

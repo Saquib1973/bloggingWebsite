@@ -521,7 +521,7 @@ server.post('/add-comment', verifyJwt, (req, res) => {
   let commentObj = new Comment({ blog_id: _id, blog_author, comment, commented_by: user_id })
   commentObj.save().then(commentFile => {
     let { comment, commentedAt, children } = commentFile;
-    Blog.findOneAndUpdate({ _id }, { $push: { "comments": commentFile._id }, $inc: { "activity.total_comments": 1 } }, { "activity.total_parents_comments": 1 }).then(blog => {
+    Blog.findOneAndUpdate({ _id }, { $push: { "comments": commentFile._id }, $inc: { "activity.total_comments": 1, "activity.total_parents_comments": 1 } }).then(blog => {
       console.log('New Comment created')
     }).catch(err => {
       console.log(err)

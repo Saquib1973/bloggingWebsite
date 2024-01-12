@@ -11,6 +11,7 @@ import { scrollToTop } from "../App";
 import { motion, useScroll, useSpring } from "framer-motion";
 import BlogContent from "../components/blog-content.component";
 import CommentContainer, { fetchComments } from "../components/comments.component";
+import Background from "../components/background.component";
 
 export const blogStructure = {
   title: "",
@@ -102,6 +103,7 @@ const BlogPage = () => {
         >
           <CommentContainer />
           <div className={`max-w-[900px] center py-10 max-lg:px-[5vw] ${commentWrapper ? "opacity-50 max-sm:h-[calc(100vh-80px)] max-sm:overflow-hidden" : ""} `}>
+            <Background height="h-[40%] sm:h-[50%] md:h-[75%]" />
             <motion.div
               className=" top-[80px] left-0 right-0 fixed h-1 bg-red/80 origin-left"
               style={{ scaleX }}
@@ -163,6 +165,7 @@ const BlogPage = () => {
                       key={index}
                       transition={{ duration: 1, delay: index * 0.08 }}
                     >
+
                       <BlogPostCard content={blog} author={personal_info} />
                     </AnimationWrapper>
                   );

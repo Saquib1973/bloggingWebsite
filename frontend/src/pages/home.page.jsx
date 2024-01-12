@@ -157,9 +157,8 @@ const Home = () => {
                 {categories.map((category, index) => (
                   <button
                     key={index}
-                    className={`tag transition-all duration-500 ${
-                      pageState === category ? "bg-black text-white" : ""
-                    }`}
+                    className={`tag transition-all duration-500 ${pageState === category ? "bg-black text-white" : ""
+                      }`}
                     onClick={loadBlogByCategory}
                   >
                     {category}
