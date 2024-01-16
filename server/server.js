@@ -499,7 +499,6 @@ server.post('/like-blog', verifyJwt, (req, res) => {
     }
   })
 })
-
 server.post('/isLikedByUser', verifyJwt, (req, res) => {
   let user_id = req.user;
   let { _id } = req.body;
@@ -511,17 +510,20 @@ server.post('/isLikedByUser', verifyJwt, (req, res) => {
     return res.status(500).json({ error: err.message })
   })
 })
-
 server.post('/add-comment', verifyJwt, (req, res) => {
   let user_id = req.user;
-  let { _id, comment, blog_author } = req.body
-  console.log(comment)
+  let { _id, comment, blog_author, replying_to } = req.body
   if (!comment.length) return res.status(403).json({ error: 'Write something to leave a comment' })
   // Creating a comment doc
-  let commentObj = new Comment({ blog_id: _id, blog_author, comment, commented_by: user_id })
-  commentObj.save().then(commentFile => {
+  let commentObj = { blog_id: _id, blog_author, comment, commented_by: user_id }
+  if (replying_to) {
+    commentObj.parent = replying_to;
+    commentObj.isReply = true;
+  }
+  new Comment(commentObj).save().then(async commentFile => {
     let { comment, commentedAt, children } = commentFile;
-    Blog.findOneAndUpdate({ _id }, { $push: { "comments": commentFile._id }, $inc: { "activity.total_comments": 1, "activity.total_parents_comments": 1 } }).then(blog => {
+    console.log('commentFile', commentFile)
+    Blog.findOneAndUpdate({ _id }, { $push: { "comments": commentFile._id }, $inc: { "activity.total_comments": 1, "activity.total_parents_comments": replying_to ? 0 : 1 } }).then(blog => {
       console.log('New Comment created')
     }).catch(err => {
       console.log(err)
@@ -529,11 +531,17 @@ server.post('/add-comment', verifyJwt, (req, res) => {
       return res.status(500).json({ error: err.message })
     });
     let notificationObj = {
-      type: "comment",
+      type: replying_to ? 'reply' : 'comment',
       blog: _id,
       notification_for: blog_author,
       user: user_id,
       comment: commentFile._id
+    }
+    if (replying_to) {
+      notificationObj.replied_on_comment = replying_to;
+      await Comment.findOneAndUpdate({ _id: replying_to }, { $push: { children: commentFile._id } }).then(replyingToCommentDoc => {
+        notificationObj.notification_for = replyingToCommentDoc.commented_by
+      })
     }
     new Notification(notificationObj).save().then(notification => {
       console.log('Notification created')
@@ -545,8 +553,6 @@ server.post('/add-comment', verifyJwt, (req, res) => {
     console.log(err)
     return res.status(500).json({ error: err.message })
   })
-
-
 })
 server.post('/get-blog-comments', (req, res) => {
   let { blog_id, skip } = req.body
@@ -560,6 +566,33 @@ server.post('/get-blog-comments', (req, res) => {
   })
 })
 
+server.post('/get-replies', (req, res) => {
+  let { _id, skip } = req.body
+  let maxLimit = 5;
+  Comment.findById(_id)
+    .populate({
+      path: "children",
+      option: {
+        limit: maxLimit,
+        skip: skip,
+        sort: { 'commentedAt': -1 },
+
+      },
+      populate: {
+        path: "commented_by",
+        select: 'personal_info.profile_img personal_info.fullname personal_info.username'
+
+      },
+      select: '-blog_id -updatedAt'
+    })
+    .select('children')
+    .then(doc => {
+      // console.log(doc)
+      return res.status(200).json({ replies: doc.children })
+    }).catch(err => {
+      return res.status(500).json({ error: err.message })
+    })
+})
 /* -------------------------------Database connection-------------------------------- */
 //connect database
 const connectDB = async () => {

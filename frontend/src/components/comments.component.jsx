@@ -25,7 +25,6 @@ export const fetchComments = async ({ skip = 0, blog_id, setParentCommentCountFu
 
   return response
 }
-
 const CommentContainer = () => {
   let { setBlog, blog, blog: { _id, activity: { total_parent_comments }, title, comments: { results: commentsArr }, comments }, commentWrapper, setCommentWrapper, totalParentCommentsLoaded, setTotalParentCommentsLoaded } = useContext(BlogContext);
   const loadMoreComments = async () => {
@@ -58,7 +57,7 @@ const CommentContainer = () => {
         commentsArr && commentsArr.length ?
           commentsArr.map((comment, index) => {
             return <AnimationWrapper key={index}>
-              <CommentCard index={index} leftVal={comment.childrenLevel * 4} commentData={comment} />
+              <CommentCard index={index} leftVal={(comment.childrenLevel) * 4} commentData={comment} />
             </AnimationWrapper>
           })
           : <NoDataMessage message={'No comments found'} />
