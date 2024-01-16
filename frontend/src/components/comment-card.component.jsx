@@ -6,9 +6,8 @@ import CommentField from './comment-field.component';
 import { BlogContext } from '../pages/blog.page';
 import axios from 'axios';
 const CommentCard = ({ index, leftVal, commentData }) => {
-    console.log(commentData)
     let { comment, commented_by: { personal_info: { profile_img, fullname, username } }, commentedAt, _id, children } = commentData;
-    let { userAuth: { access_token } } = useContext(UserContext)
+    let { userAuth: { access_token, username: user } } = useContext(UserContext)
     let { blog: { comments: { results: commentsArr }, comments }, blog, setBlog, } = useContext(BlogContext)
     const [isReplying, setIsReplying] = useState(false);
     const handleReply = () => {
@@ -51,7 +50,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
     return (
 
         <div className='w-full' style={{ paddingLeft: `${leftVal * 10}px` }}>
-            <div className='my-5 p-6 rounded-md border-grey border '>
+            <div className={`my-5 p-6 rounded-md border-grey  border ${username === user ? "bg-gradient-to-l from-white to-gray-50" : "bg-gradient-to-r from-white to-gray-50"}`}>
                 <div className='flex gap-3 items-center mb-8'>
                     <img src={profile_img} className='w-6 h-6 rounded-full' alt="" />
                     <p className='line-clamp-1'>{fullname} @{username}</p>

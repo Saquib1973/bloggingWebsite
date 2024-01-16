@@ -43,7 +43,6 @@ const App = () => {
       setShowLogo(false);
     }
   }, [pathname]);
-
   return (
     <UserContext.Provider value={{ userAuth, setUserAuth }}>
       {showLogo ? (
