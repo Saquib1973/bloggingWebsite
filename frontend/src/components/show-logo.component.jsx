@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { motion } from "framer-motion";
 import Logo from "../imgs/full-logo.png";
+import { ThemeContext } from "../App";
 
 const ShowLogo = () => {
+  let { theme } = useContext(ThemeContext)
   const color = ["bg-red/20", "bg-purple/20", "bg-twitter/20", "bg-red/20"];
   let bgColor = color[Math.floor(Math.random() * 4) + 1];
   return (
@@ -26,7 +28,7 @@ const ShowLogo = () => {
       />
       <div className="w-full z-30 flex items-center justify-center  flex-col relative">
         <motion.img
-          className="w-[30%] md:w-[20%] min-[1100px]:w-[10%]  m-auto"
+          className={`w-[30%] md:w-[20%] min-[1100px]:w-[10%]  m-auto ${theme !== "light" ? "invert" : ""}`}
           src={Logo}
           alt=""
           initial={{ opacity: 0, y: 0 }}

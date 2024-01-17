@@ -9,8 +9,9 @@ import { EditorContext } from "../pages/editor.pages";
 import EditorJS from "@editorjs/editorjs";
 import { tools } from "./tools.component";
 import axios from "axios";
-import { UserContext, scrollToTop } from "../App";
+import { ThemeContext, UserContext, scrollToTop } from "../App";
 const BlogEditor = () => {
+  let { theme } = useContext(ThemeContext)
   let { blog_id } = useParams();
   // constants
   const navigate = useNavigate();
@@ -160,7 +161,7 @@ const BlogEditor = () => {
     setTimeout(() => {
       toast(
         <div
-          className="w-full text-sm md:text-lg drop-shadow-md rounded-md p-2 md:p-4 bg-red/80 text-white"
+          className="w-full text-sm md:text-lg text-gray-100"
           onClick={() => toast.remove()}
         >
           {"Dont reload ! before completing the blog . Data might be lost . "}
@@ -175,6 +176,9 @@ const BlogEditor = () => {
         {
           duration: 10000,
           position: "top-center",
+          style: {
+            background: 'red'
+          }
         }
       );
     }, 1000);
@@ -185,7 +189,7 @@ const BlogEditor = () => {
       {/* Navbar component for Editor section */}
       <nav className="navbar">
         <Link to={"/"} className="flex-none w-10">
-          <img src={logo} alt="" />
+          <img src={logo} alt="" className={`${theme !== 'light' ? "invert" : ""}`} />
         </Link>
         <p className="max-md:hidden text-black line-clamp-1 w-full">
           {title.length ? title : "New Blog"}
@@ -213,7 +217,7 @@ const BlogEditor = () => {
                 <img
                   src={banner ? banner : defaultBanner}
                   alt=""
-                  className="z-20 cursor-pointer"
+                  className={`z-20 cursor-pointer ${banner ? banner : theme !== 'light' ? "invert-[75%]" : ""}`}
                 />
                 <input
                   type="file"
@@ -227,7 +231,7 @@ const BlogEditor = () => {
             <textarea
               defaultValue={title}
               placeholder="Blog Title"
-              className="text-4xl outline-none font-medium w-full h-20 resize-none mt-10 leading-tight placeholder:opacity-40"
+              className="text-4xl outline-none font-medium w-full h-20 resize-none mt-10 leading-tight bg-white placeholder:opacity-40"
               onKeyDown={handleTitleKeyDown}
               onChange={handleTitleChange}
             ></textarea>

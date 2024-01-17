@@ -1,8 +1,9 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import logo from "../imgs/logo.png";
-import { UserContext, scrollToTop } from "../App";
+import { ThemeContext, UserContext, scrollToTop } from "../App";
 import UserNavigationPanel from "./user-navigation.component";
+import { storeInSession } from "../common/session";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const Navbar = () => {
   // UseRef
   const userNavPanelRef = useRef(null);
   // Context
+  let { theme, setTheme } = useContext(ThemeContext)
   const {
     userAuth,
     userAuth: { access_token, profile_img },
@@ -48,12 +50,17 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [userNavPanelRef]);
-
+  const changeTheme = () => {
+    let newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    document.body.setAttribute('data-theme', newTheme);
+    storeInSession('theme', newTheme);
+  }
   return (
     <>
       <nav className="navbar z-50 ">
         <Link className="flex-none w-10" to={"/"} onClick={scrollToTop}>
-          <img src={logo} alt="logo" />
+          <img src={logo} alt="logo" className={`${theme === 'dark' ? "invert" : ""}`} />
         </Link>
         <div
           className={`
@@ -87,6 +94,13 @@ const Navbar = () => {
               <p>Write</p>
               <i className="fi fi-rr-file-edit"></i>
             </Link>
+            <button className="w-12 h-12 rounded-full bg-grey hover:bg-black/10 relative" onClick={changeTheme}>
+              {
+                theme === 'light' ? <i className="fi fi-rr-moon-stars"></i>
+                  :
+                  <i className="fi fi-rr-brightness"></i>
+              }
+            </button>
             {access_token ? (
               <>
                 <Link to={"/dashboard/notification"} onClick={scrollToTop}>

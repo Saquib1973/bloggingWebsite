@@ -60,7 +60,6 @@ const ProfilePage = () => {
         });
         formatedData.user_id = user_id;
         setBlogs(formatedData);
-        console.log(formtedData);
       })
       .catch((error) => {
         console.log(error.message);

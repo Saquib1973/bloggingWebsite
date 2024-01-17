@@ -110,7 +110,7 @@ const CommentCard = ({ index, leftVal, commentData }) => {
     return (
 
         <div className='w-full' style={{ paddingLeft: `${leftVal * 10}px` }}>
-            <div className={`my-5 p-6 rounded-md border-grey  border ${username === commented_by_username ? "bg-gradient-to-l from-white to-gray-50" : "bg-gradient-to-r from-white to-gray-50"}`}>
+            <div className={`my-5 p-6 rounded-md border-grey  border "bg-white"`}>
                 <div className='flex gap-3 items-center mb-8'>
                     <img src={profile_img} className='w-6 h-6 rounded-full' alt="" />
                     <p className='line-clamp-1'>{fullname} @{commented_by_username}</p>

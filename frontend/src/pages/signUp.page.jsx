@@ -115,7 +115,7 @@ const SignUp = () => {
           >
             {type.replace("-", " ")}
           </button>
-          <div className="p-2 sm:px-4 rounded-md w-auto bg-red/75 text-center tracking-tight sm:tracking-wider font-extralight text-white mt-5 mx-4 sm:mx-10">
+          <div className="p-2 sm:px-4 rounded-md w-auto bg-red/75 text-center tracking-tight sm:tracking-wider font-extralight text-gray-50 mt-5 mx-4 sm:mx-10">
             {"Google Auth is not available on mobiles/tablets. "}
             <Link to={"/help"} className="underline">
               Need Help?
