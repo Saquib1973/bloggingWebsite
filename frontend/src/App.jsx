@@ -14,6 +14,7 @@ import BlogPage from "./pages/blog.page";
 import LoginPage from "./pages/login.page";
 import SignUp from "./pages/signUp.page";
 import { Dev } from "./pages/dev.page";
+import SideNav from "./components/sidenavbar.component";
 
 export const UserContext = createContext({});
 export const scrollToTop = () => {
@@ -54,6 +55,10 @@ const App = () => {
           <Route path="/editor/:blog_id" element={<Editor />} />
           <Route path="/" element={<Navbar showLogo={showLogo} />}>
             <Route index element={<Home />} />
+            <Route path="/settings" element={<SideNav />}>
+              <Route path="edit-profile" element={<h1>Edit Profile Page</h1>} />
+              <Route path="change-password" element={<h1>Change Password Page</h1>} />
+            </Route>
             {/* <Route path="signin" element={<UserAuthForm type={"sign-in"} />} /> */}
             {/* <Route path="signup" element={<UserAuthForm type={"sign-up"} />} /> */}
             <Route path="auth/signin" element={<LoginPage />} />

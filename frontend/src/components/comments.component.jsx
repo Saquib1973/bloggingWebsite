@@ -33,7 +33,7 @@ const CommentContainer = () => {
 
   }
   return (
-    <div className={`max-sm:w-full fixed ${commentWrapper ? "top-0 sm:top-1/2 sm:-translate-y-[45%] sm:bottom-0" : "top-[100%] sm:bottom-[-100%]"} duration-700 max-sm:right-0 sm:bottom-0 sm:right-1/2 sm:translate-x-1/2 w-[80%] md:w-[70%] xl:w-[50%] min-w-[350px] h-full sm:h-[88%] rounded-xl z-50  bg-white shadow-2xl p-8 px-16 overflow-y-auto overflow-x-hidden`}>
+    <div className={`max-sm:w-full fixed ${commentWrapper ? "top-0 sm:top-1/2 sm:-translate-y-[45%] sm:bottom-0" : "top-[100%] sm:bottom-[-100%]"} duration-700 max-sm:right-0 sm:bottom-0 sm:right-1/2 sm:translate-x-1/2 w-[80%] md:w-[70%] xl:w-[50%] min-w-[350px] h-full sm:h-[88%] rounded-xl z-50  bg-white shadow-2xl p-8 px-6  sm:px-8 md:px-10 xl:px-16 overflow-y-auto overflow-x-hidden`}>
       <div className='relative'>
         <h1 className='text-xl font-medium'>
           Comments

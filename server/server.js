@@ -567,11 +567,11 @@ server.post('/get-blog-comments', (req, res) => {
 
 server.post('/get-replies', (req, res) => {
   let { _id, skip } = req.body
-  let maxLimit = 5;
+  let maxLimit = 3;
   Comment.findById(_id)
     .populate({
       path: "children",
-      option: {
+      options: {
         limit: maxLimit,
         skip: skip,
         sort: { 'commentedAt': -1 },

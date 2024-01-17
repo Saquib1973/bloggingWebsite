@@ -51,15 +51,14 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="navbar">
+      <nav className="navbar z-50 ">
         <Link className="flex-none w-10" to={"/"} onClick={scrollToTop}>
           <img src={logo} alt="logo" />
         </Link>
         <div
           className={`
             absolute bg-white w-full left-0 top-full mt-0.5 border-b border-grey py-4 px-[5vw]
-            md:border-0 md:relative md:inset-0 md:p-0 md:w-auto md:show ${
-              searchBoxVisibility ? "show" : "hide"
+            md:border-0 md:relative md:inset-0 md:p-0 md:w-auto md:show ${searchBoxVisibility ? "show" : "hide"
             }
           `}
         >

@@ -43,7 +43,6 @@ const CommentField = ({ action, index = undefined, replyingTo = undefined, setRe
   }
   return (
     <>
-      <Toaster />
       <textarea value={comment} onChange={(e) => {
         setComment(e.target.value)
       }} placeholder='Leave a comment' className='input-box pl-5 placeholder:text-dark-grey resize-none h-[150px] overflow-auto' >
