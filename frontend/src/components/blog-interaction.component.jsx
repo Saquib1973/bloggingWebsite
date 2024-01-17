@@ -125,6 +125,7 @@ const BlogInteraction = () => {
         </div>
       </div>
       <hr className="border-grey my-2" />
+
     </>
   );
 };
