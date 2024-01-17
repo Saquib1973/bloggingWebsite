@@ -6,9 +6,9 @@ import CommentField from './comment-field.component';
 import { BlogContext } from '../pages/blog.page';
 import axios from 'axios';
 const CommentCard = ({ index, leftVal, commentData }) => {
-    let { comment, commented_by: { personal_info: { profile_img, fullname, username } }, commentedAt, _id, children } = commentData;
-    let { userAuth: { access_token, username: user } } = useContext(UserContext)
-    let { blog: { comments: { results: commentsArr }, comments }, blog, setBlog, } = useContext(BlogContext)
+    let { comment, commented_by: { personal_info: { profile_img, fullname, username: commented_by_username } }, commentedAt, _id, children } = commentData;
+    let { userAuth: { access_token, username } } = useContext(UserContext)
+    let { blog: { activity, activity: { total_parent_comments }, comments: { results: commentsArr }, author: { personal_info: { username: blog_author } }, comments }, blog, setBlog, setTotalParentCommentsLoaded } = useContext(BlogContext)
     const [isReplying, setIsReplying] = useState(false);
     const handleReply = () => {
         if (!access_token) {
@@ -17,14 +17,38 @@ const CommentCard = ({ index, leftVal, commentData }) => {
         setIsReplying(prev => !prev);
 
     }
-    const removeCommentsCard = (startingPoint) => {
+    const getParentIndex = () => {
+        let startingPoint = index - 1;
+        try {
+            while (commentsArr[startingPoint].childrenLevel >= commentData.childrenLevel) {
+                startingPoint--;
+            }
+        } catch (error) {
+            startingPoint = undefined
+        }
+        return startingPoint;
+    }
+    const removeCommentsCard = (startingPoint, isDelete = false) => {
         if (commentsArr[startingPoint]) {
             while (commentsArr[startingPoint].childrenLevel > commentData.childrenLevel) {
                 commentsArr.splice(startingPoint, 1);
                 if (!commentsArr[startingPoint])
                     break;
             }
-            setBlog({ ...blog, comments: { results: commentsArr } })
+            if (isDelete) {
+                let parentIndex = getParentIndex();
+                if (parentIndex !== undefined) {
+                    commentsArr[parentIndex].children = commentsArr[parentIndex].children.filter(child => child !== _id)
+                    if (commentsArr[parentIndex].children.length) {
+                        commentsArr[parentIndex].isReplyLoaded = false;
+                    }
+                }
+                commentsArr.splice(index, 1);
+            }
+            if (commentData.childrenLevel === 0 && isDelete) {
+                setTotalParentCommentsLoaded(prev => prev--)
+            }
+            setBlog({ ...blog, comments: { results: commentsArr }, activity: { ...activity, total_parent_comments: total_parent_comments - (commentData.children === 0 && isDelete ? 1 : 0) } })
         }
     }
     const hideReplies = () => {
@@ -47,13 +71,27 @@ const CommentCard = ({ index, leftVal, commentData }) => {
             })
         }
     }
+    const deleteComment = (e) => {
+        e.target.setAttribute('disabled', true)
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/delete-comment", { _id }, {
+            headers: {
+                Authorization: `Bearer ${access_token}`
+            }
+        }).then(() => {
+            e.target.removeAttribute('disabled')
+            removeCommentsCard(index + 1, true)
+        }).catch(err => {
+            console.log(err)
+        })
+
+    }
     return (
 
         <div className='w-full' style={{ paddingLeft: `${leftVal * 10}px` }}>
-            <div className={`my-5 p-6 rounded-md border-grey  border ${username === user ? "bg-gradient-to-l from-white to-gray-50" : "bg-gradient-to-r from-white to-gray-50"}`}>
+            <div className={`my-5 p-6 rounded-md border-grey  border ${username === commented_by_username ? "bg-gradient-to-l from-white to-gray-50" : "bg-gradient-to-r from-white to-gray-50"}`}>
                 <div className='flex gap-3 items-center mb-8'>
                     <img src={profile_img} className='w-6 h-6 rounded-full' alt="" />
-                    <p className='line-clamp-1'>{fullname} @{username}</p>
+                    <p className='line-clamp-1'>{fullname} @{commented_by_username}</p>
                     <p className='min-w-fit'>{getDay(commentedAt)}</p>
                 </div>
                 <p className='font-gelasio text-xl ml-3'>{comment}</p>
@@ -72,6 +110,12 @@ const CommentCard = ({ index, leftVal, commentData }) => {
                     <button className='underline' onClick={handleReply}>
                         Reply
                     </button>
+                    {
+                        username === commented_by_username || username === blog_author ? <button
+                            className='p-2 px-3 rounded-xl border- border-grey ml-auto  hover:bg-red/30 hover:text-red flex items-center transition-all'
+                            onClick={deleteComment}
+                        ><i className="fi fi-rr-trash pointer-events-none"></i></button> : ""
+                    }
                 </div>
                 {
                     isReplying && (

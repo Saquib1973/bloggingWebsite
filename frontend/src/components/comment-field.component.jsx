@@ -20,14 +20,12 @@ const CommentField = ({ action, index = undefined, replyingTo = undefined, setRe
         'Authorization': `Bearer ${access_token}`
       }
     }).then(({ data }) => {
-      console.log('data', data)
       setComment("");
       data.commented_by = { personal_info: { username, profile_img, fullname } };
       let newCommentArr;
       if (replyingTo) {
         commentsArr[index].children.push(data._id);
         data.childrenLevel = commentsArr[index].childrenLevel + 1;
-        console.log('level', commentsArr[index].childrenLevel)
         data.parentIndex = index;
         commentsArr[index].isReplyLoaded = true;
         commentsArr.splice(index + 1, 0, data);

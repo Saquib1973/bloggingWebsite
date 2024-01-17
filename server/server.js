@@ -522,7 +522,6 @@ server.post('/add-comment', verifyJwt, (req, res) => {
   }
   new Comment(commentObj).save().then(async commentFile => {
     let { comment, commentedAt, children } = commentFile;
-    console.log('commentFile', commentFile)
     Blog.findOneAndUpdate({ _id }, { $push: { "comments": commentFile._id }, $inc: { "activity.total_comments": 1, "activity.total_parents_comments": replying_to ? 0 : 1 } }).then(blog => {
       console.log('New Comment created')
     }).catch(err => {
@@ -592,6 +591,62 @@ server.post('/get-replies', (req, res) => {
     }).catch(err => {
       return res.status(500).json({ error: err.message })
     })
+})
+
+const deleteComments = (_id) => {
+  Comment.findOneAndDelete({ _id }).then(comment => {
+    if (comment.parent) {
+      Comment.findOneAndUpdate({ _id: comment.parent }, { $pull: { children: _id } })
+        .then(data => {
+          // console.log('comment deleted from parent')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+    Notification.findOneAndDelete({ comment: _id }).then(notification => {
+      // console.log('notificatinon deleted')
+    }).catch(err => {
+      console.log(err)
+    })
+    Notification.findOneAndDelete({ reply: _id }).then(notification => {
+      // console.log('notificatinon reply deleted')
+    }).catch(err => {
+      console.log(err)
+    })
+    Blog.findOneAndUpdate({ _id: comment.blog_id }, { $pull: { comments: _id }, $inc: { "activity.total_comments": -1 }, "activity.total_parent_comments": comment.parent ? 0 : -1 })
+      .then(blog => {
+        if (comment.children.length) {
+          comment.children.map(replies => {
+            deleteComments(replies)
+          })
+        }
+      })
+  })
+    .catch(err => {
+      console.log(err.message)
+      return res.status(500).json({ error: err.message })
+    })
+}
+
+server.post('/delete-comment', verifyJwt, (req, res) => {
+  let user_id = req.user;
+  // console.log(user_id)
+  let { _id } = req.body;
+  Comment.findOne({ _id }).then(comment => {
+    // console.log(comment)
+    if (user_id == comment.commented_by || user_id == comment.blog_author) {
+      deleteComments(_id)
+      return res.status(200).json({
+        status: "done",
+      })
+    } else {
+      console.log('error')
+      return res.status(403).send({
+        error: 'You cannot delete this comment'
+      })
+    }
+  })
 })
 /* -------------------------------Database connection-------------------------------- */
 //connect database

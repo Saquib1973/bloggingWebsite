@@ -28,14 +28,13 @@ const InPageNavigation = ({
             ref={index === defaultActiveIndex ? activeTabRef : null}
             onClick={(e) => changePageState(e.target, index)}
             key={index}
-            className={`p-4 px-5 capitalize ${
-              inPageNavIndex === index ? "text-black" : "text-dark-grey"
-            } ${defaultHidden.includes(route) ? "md:hidden" : ""}`}
+            className={`p-4 px-5 capitalize ${inPageNavIndex === index ? "text-black" : "text-dark-grey"
+              } ${defaultHidden.includes(route) ? "md:hidden" : ""}`}
           >
             {route}
           </button>
         ))}
-        <hr ref={activeTabLineRef} className="absolute bottom-0 duration-300" />
+        <hr ref={activeTabLineRef} className="absolute bottom-0 duration-300 border-dark-grey" />
       </div>
       {Array.isArray(children) ? children[inPageNavIndex] : children}
     </>
