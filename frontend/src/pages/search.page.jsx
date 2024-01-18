@@ -54,7 +54,6 @@ const SearchPage = () => {
     setBlogs(null);
     setUsers(null);
   };
-  console.log(users);
   return (
     <section className="h-cover flex justify-center gap-10">
       <div className="w-full">

@@ -113,7 +113,6 @@ const BlogPage = () => {
   }, [blog_id]);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress);
-
   return (
     <AnimationWrapper>
       <Toaster />
@@ -182,7 +181,7 @@ const BlogPage = () => {
             <h1 className="text-2xl mt-14 mb-10 font-medium">
               Similar Blogs
             </h1>
-            {((similarBlogs !== null && similarBlogs.length) && similarBlogs.length === 0) ? <>
+            {((similarBlogs !== null && similarBlogs.length)) ? <>
               {similarBlogs.map((blog, index) => {
                 let {
                   author: { personal_info },
