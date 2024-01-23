@@ -164,6 +164,36 @@ server.post("/signin", (req, res) => {
       return res.status(500).json({ error: err.message });
     });
 });
+server.post("/change-password", verifyJwt, (req, res) => {
+
+  let { currentPassword, newPassword } = req.body;
+  if (!passwordRegex.test(currentPassword) || !passwordRegex.test(newPassword)) {
+    return req.status(403).json({ error: "Password should be 6 to 12 character long with a numeric , 1 lowercase and 1 uppercase letter" })
+  }
+  User.findOne({ _id: req.user }).then(user => {
+    if (user.google_auth) {
+      return res.status(403).json({ error: "You cant change accoutns password because you logged in with google auth" })
+    } else {
+      bcrypt.compare(currentPassword, user.personal_info.password, (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: "Some Error Occured while changing the password please try again later" })
+        }
+        if (!result) {
+          return res.status(403).json({ error: "Incorrect current password" })
+        }
+        bcrypt.hash(newPassword, 10, (err, hashed_password) => {
+          User.findOneAndUpdate({ _id: req.user }, { "personal_info.password": hashed_password }).then(user => {
+            return res.status(200).json({ status: 'password changed' })
+          }).catch(err => {
+            return res.status(500).json({ error: err.message })
+          })
+        })
+      })
+    }
+  }).catch(err => {
+    return res.status(500).json({ error: err.message })
+  })
+})
 // route to signin or register using google auth
 server.post("/google-auth", async (req, res) => {
   let { access_token } = req.body;

@@ -5,7 +5,7 @@ const Loader = () => {
   const [state, setState] = useState(true)
   setTimeout(() => {
     setState(false)
-  }, 10000);
+  }, 20000);
   const random = (Math.floor(Math.random() * 4) + 1);
   const hint = [
     "Check Internet connection",
