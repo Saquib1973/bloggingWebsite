@@ -15,8 +15,8 @@
 # Content-Type: application/json
 
 # {
-#     "email":"john@gmail.com",
-#     "password":"Saban1973"
+#     "email":"saquib@gmail.com",
+#     "password":"Saquib1973"
 # }
 
 
@@ -38,6 +38,16 @@
 #     },
 #     "tags":["tag1","tag2"]
 # }
+
+
+POST http://localhost:3000/change-password
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODNlMmYzZjM0YTZlZGU0MTI5NTRhMSIsImlhdCI6MTcwNjAyODY3NX0.291k_EsDeBOTZ4DzyKWtzgOXgGeuU3w3A2Bg_GLJB1k
+
+{
+    "currentPassword":"Saquib1973",
+    "newPassword":"Saban1973"
+    }
 
 # POST  http://localhost:3000/latest-blogs
 # Content-Type: application/json
@@ -78,9 +88,9 @@
 #     "username":"saquib"
 # }
 
-POST http://localhost:3000/get-blog
-Content-Type: application/json
+# POST http://localhost:3000/get-blog
+# Content-Type: application/json
 
-{
-    "blog_id":"saquib1NPOaJrTgnhlkiVZwEmVIa"
-}
+# {
+#     "blog_id":"saquib1NPOaJrTgnhlkiVZwEmVIa"
+# }

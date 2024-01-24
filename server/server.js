@@ -89,6 +89,42 @@ const generateUsername = async (email) => {
   }
   return username;
 };
+// function to delete a comment
+const deleteComments = (_id) => {
+  Comment.findOneAndDelete({ _id }).then(comment => {
+    if (comment.parent) {
+      Comment.findOneAndUpdate({ _id: comment.parent }, { $pull: { children: _id } })
+        .then(data => {
+          // console.log('comment deleted from parent')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+    Notification.findOneAndDelete({ comment: _id }).then(notification => {
+      // console.log('notificatinon deleted')
+    }).catch(err => {
+      console.log(err)
+    })
+    Notification.findOneAndDelete({ reply: _id }).then(notification => {
+      // console.log('notificatinon reply deleted')
+    }).catch(err => {
+      console.log(err)
+    })
+    Blog.findOneAndUpdate({ _id: comment.blog_id }, { $pull: { comments: _id }, $inc: { "activity.total_comments": -1 }, "activity.total_parent_comments": comment.parent ? 0 : -1 })
+      .then(blog => {
+        if (comment.children.length) {
+          comment.children.map(replies => {
+            deleteComments(replies)
+          })
+        }
+      })
+  })
+    .catch(err => {
+      console.log(err.message)
+      return res.status(500).json({ error: err.message })
+    })
+}
 /* --------------------------------------Routes------------------------------------ */
 //route to upload image url
 server.get("/get-upload-url", (req, res) => {
@@ -164,12 +200,14 @@ server.post("/signin", (req, res) => {
       return res.status(500).json({ error: err.message });
     });
 });
+// Route to change password
 server.post("/change-password", verifyJwt, (req, res) => {
-
   let { currentPassword, newPassword } = req.body;
   if (!passwordRegex.test(currentPassword) || !passwordRegex.test(newPassword)) {
     return req.status(403).json({ error: "Password should be 6 to 12 character long with a numeric , 1 lowercase and 1 uppercase letter" })
   }
+  // First we find the user and then check if the users account was created using google auth or with normal registration
+  // Then for the second case we compare the password in database and current password if they match we then hash the new password and save it in the database else we come out and say that the password doesn't match
   User.findOne({ _id: req.user }).then(user => {
     if (user.google_auth) {
       return res.status(403).json({ error: "You cant change accoutns password because you logged in with google auth" })
@@ -529,6 +567,7 @@ server.post('/like-blog', verifyJwt, (req, res) => {
     }
   })
 })
+// Route to know if a post is liked by user
 server.post('/isLikedByUser', verifyJwt, (req, res) => {
   let user_id = req.user;
   let { _id } = req.body;
@@ -540,6 +579,7 @@ server.post('/isLikedByUser', verifyJwt, (req, res) => {
     return res.status(500).json({ error: err.message })
   })
 })
+// Route to add comment
 server.post('/add-comment', verifyJwt, (req, res) => {
   let user_id = req.user;
   let { _id, comment, blog_author, replying_to } = req.body
@@ -583,6 +623,7 @@ server.post('/add-comment', verifyJwt, (req, res) => {
     return res.status(500).json({ error: err.message })
   })
 })
+// Route to get all blog comments
 server.post('/get-blog-comments', (req, res) => {
   let { blog_id, skip } = req.body
   let maxLimit = 5;
@@ -594,7 +635,7 @@ server.post('/get-blog-comments', (req, res) => {
     return res.status(500).json({ error: err.message })
   })
 })
-
+// Route to get replies to a particular comment
 server.post('/get-replies', (req, res) => {
   let { _id, skip } = req.body
   let maxLimit = 3;
@@ -622,43 +663,7 @@ server.post('/get-replies', (req, res) => {
       return res.status(500).json({ error: err.message })
     })
 })
-
-const deleteComments = (_id) => {
-  Comment.findOneAndDelete({ _id }).then(comment => {
-    if (comment.parent) {
-      Comment.findOneAndUpdate({ _id: comment.parent }, { $pull: { children: _id } })
-        .then(data => {
-          // console.log('comment deleted from parent')
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    }
-    Notification.findOneAndDelete({ comment: _id }).then(notification => {
-      // console.log('notificatinon deleted')
-    }).catch(err => {
-      console.log(err)
-    })
-    Notification.findOneAndDelete({ reply: _id }).then(notification => {
-      // console.log('notificatinon reply deleted')
-    }).catch(err => {
-      console.log(err)
-    })
-    Blog.findOneAndUpdate({ _id: comment.blog_id }, { $pull: { comments: _id }, $inc: { "activity.total_comments": -1 }, "activity.total_parent_comments": comment.parent ? 0 : -1 })
-      .then(blog => {
-        if (comment.children.length) {
-          comment.children.map(replies => {
-            deleteComments(replies)
-          })
-        }
-      })
-  })
-    .catch(err => {
-      console.log(err.message)
-      return res.status(500).json({ error: err.message })
-    })
-}
-
+// Route to delete a comment
 server.post('/delete-comment', verifyJwt, (req, res) => {
   let user_id = req.user;
   // console.log(user_id)

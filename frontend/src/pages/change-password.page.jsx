@@ -9,6 +9,7 @@ const ChangePassword = () => {
     let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
     let { userAuth: { access_token } } = useContext(UserContext)
     const changePassRef = useRef()
+    // HandleSubmit to handle change password submit
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('clicked')
